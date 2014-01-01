@@ -1,9 +1,3 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-01-01T19:01:01
-#
-#-------------------------------------------------
-
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -13,6 +7,7 @@ TEMPLATE = app
 
 CONFIG += c++11
 
+INCLUDEPATH += .
 
 SOURCES += \
     main.cpp\
