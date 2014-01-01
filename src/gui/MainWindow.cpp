@@ -32,7 +32,7 @@ void MainWindow::createMenus()
 {
     QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
     openDatabaseAction_ = fileMenu->addAction(tr("Open Database File"));
-    connect(openDatabaseAction_, SIGNAL(triggered()), this, SLOT(openDatabase()));
+    connect(openDatabaseAction_, &QAction::triggered, this, &MainWindow::openDatabase);
 }
 
 void MainWindow::createPanels()
