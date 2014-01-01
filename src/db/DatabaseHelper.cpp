@@ -1,5 +1,8 @@
 #include "db/DatabaseHelper.h"
 
-DatabaseHelper::DatabaseHelper()
+using std::string;
+
+DatabaseHelper::DatabaseHelper(const string& filePath)
 {
+
 }
