@@ -33,13 +33,14 @@ int DatabaseHelper::addPaper(const Paper& paper)
         bookTitleId = addBookTitle(paper.getBookTitle());
     }
 
-    vector<int> authorsId;
-    for (const string& author : paper.getAuthors()) {
+    vector<int> authorsId(paper.getAuthors().size());
+    for (vector<int>::size_type i = 0; i < paper.getAuthors().size(); ++i) {
+        const string& author = paper.getAuthors().at(i);
         int authorId = getAuthorId(author);
         if (authorId == -1) {
             authorId = addAuthor(author);
         }
-        authorsId.push_back(authorId);
+        authorsId[i] = authorId;
     }
 
     char qBuf[BUFSIZE];
