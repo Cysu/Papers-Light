@@ -2,6 +2,8 @@
 #define DATABASEHELPER_H
 
 #include "common/Paper.h"
+#include <string>
+#include <vector>
 #include <QSqlDatabase>
 
 /**
@@ -26,6 +28,8 @@ public:
     const Paper& getPaper(int paperId);
 
     int addPaper(const Paper& paper);
+    int addBookTitle(const std::string& bookTitle);
+    int addAuthor(const std::string& author);
 
     bool updatePaper(int paperId, const Paper& paper);
 
@@ -37,7 +41,8 @@ private:
 private:
     void createTables();
 
-    long long getLastInsertRowId();
+    int getBookTitleId(const std::string& bookTitle);
+    int getAuthorId(const std::string& author);
 };
 
 #endif // DATABASEHELPER_H

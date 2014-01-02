@@ -14,3 +14,8 @@ Paper::Paper(int year,
 {
 
 }
+
+Paper::~Paper()
+{
+
+}

@@ -18,4 +18,5 @@ SOURCES += \
 HEADERS += \
     gui/MainWindow.h \
     db/DatabaseHelper.h \
-    common/Paper.h
+    common/Paper.h \
+    common/const.h

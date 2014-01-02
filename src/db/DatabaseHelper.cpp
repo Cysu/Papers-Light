@@ -1,6 +1,10 @@
 #include "db/DatabaseHelper.h"
+#include "common/const.h"
 #include <QSqlQuery>
 #include <QVariant>
+
+using std::string;
+using std::vector;
 
 DatabaseHelper::DatabaseHelper()
     : db_(QSqlDatabase::addDatabase("QSQLITE"))
@@ -22,13 +26,80 @@ void DatabaseHelper::init(const QString& filePath)
     createTables();
 }
 
+int DatabaseHelper::addPaper(const Paper& paper)
+{
+    int bookTitleId = getBookTitleId(paper.getBookTitle());
+    if (bookTitleId == -1) {
+        bookTitleId = addBookTitle(paper.getBookTitle());
+    }
+
+    vector<int> authorsId;
+    for (const string& author : paper.getAuthors()) {
+        int authorId = getAuthorId(author);
+        if (authorId == -1) {
+            authorId = addAuthor(author);
+        }
+        authorsId.push_back(authorId);
+    }
+
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "INSERT INTO pl_paper(year, book_title_id, title) "
+            "VALUES(%d, %d, \"%s\")",
+            paper.getYear(), bookTitleId, paper.getTitle().c_str());
+
+    QSqlQuery query;
+    query.exec(qBuf);
+
+    int paperId = query.lastInsertId().toInt();
+
+    for (int i = 0; i < static_cast<int>(authorsId.size()); ++i) {
+        sprintf(qBuf,
+                "INSERT INTO pl_paper2author(paper_id, author_id, author_order) "
+                "VALUES(%d, %d, %d)",
+                paperId, authorsId[i], i);
+
+        query.exec(qBuf);
+    }
+
+    return paperId;
+}
+
+int DatabaseHelper::addBookTitle(const string& bookTitle)
+{
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "INSERT INTO pl_book_title(book_title_name) "
+            "VALUES(\"%s\")",
+            bookTitle.c_str());
+
+    QSqlQuery query;
+    query.exec(qBuf);
+
+    return query.lastInsertId().toInt();
+}
+
+int DatabaseHelper::addAuthor(const string& author)
+{
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "INSERT INTO pl_author(author_name) "
+            "VALUES(\"%s\")",
+            author.c_str());
+
+    QSqlQuery query;
+    query.exec(qBuf);
+
+    return query.lastInsertId().toInt();
+}
+
 void DatabaseHelper::createTables()
 {
     QSqlQuery query;
     query.exec("CREATE TABLE IF NOT EXISTS pl_paper("
                "    paper_id INTEGER PRIMARY KEY,"
                "    year SMALLINT,"
-               "    book_title INT,"
+               "    book_title_id INT,"
                "    title TEXT NOT NULL,"
                "    comment TEXT)");
 
@@ -60,9 +131,30 @@ void DatabaseHelper::createTables()
                "    UNIQUE (paper_id, author_id))");
 }
 
-long long DatabaseHelper::getLastInsertRowId()
+int DatabaseHelper::getBookTitleId(const string& bookTitle)
 {
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "SELECT book_title_id FROM pl_book_title WHERE book_title_name = \"%s\"",
+            bookTitle.c_str());
+
     QSqlQuery query;
-    query.exec("SELECT LAST_INSERT_ROWID()");
-    return query.value(0).toLongLong();
+    query.exec(qBuf);
+
+    if (query.size() == -1) return -1;
+    return query.value(0).toInt();
+}
+
+int DatabaseHelper::getAuthorId(const string& author)
+{
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "SELECT author_id FROM pl_author WHERE author_name = \"%s\"",
+            author.c_str());
+
+    QSqlQuery query;
+    query.exec(qBuf);
+
+    if (query.size() == -1) return -1;
+    return query.value(0).toInt();
 }
