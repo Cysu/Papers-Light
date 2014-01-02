@@ -14,6 +14,11 @@ public:
     CategoryList(const QString& title, QWidget* parent = 0);
     ~CategoryList();
 
+    void addItem(const QString& content);
+    void addItems(const QStringList& contents);
+
+    void clear();
+
 private:
     QString title_;
 

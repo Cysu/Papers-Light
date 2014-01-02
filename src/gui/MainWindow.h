@@ -35,6 +35,8 @@ private slots:
 private:
     void createMenus();
     void createPanels();
+
+    void refreshAllPanels();
 };
 
 #endif // MAINWINDOW_H

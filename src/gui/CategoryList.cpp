@@ -16,12 +16,35 @@ CategoryList::~CategoryList()
 
 }
 
+void CategoryList::addItem(const QString& content)
+{
+    QStandardItem* item = new QStandardItem(content);
+    item->setEditable(false);
+    model_->appendRow(item);
+}
+
+void CategoryList::addItems(const QStringList& contents)
+{
+    for (int i = 0; i < contents.size(); ++i) {
+        QStandardItem* item = new QStandardItem(contents[i]);
+        item->setEditable(false);
+        model_->appendRow(item);
+    }
+}
+
+void CategoryList::clear()
+{
+    model_->clear();
+}
+
 void CategoryList::createPanels()
 {
     titleLabel_ = new QLabel(title_);
 
     view_ = new QListView;
     model_ = new QStandardItemModel;
+
+    view_->setModel(model_);
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(titleLabel_);

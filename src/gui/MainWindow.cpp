@@ -1,9 +1,13 @@
 #include "gui/MainWindow.h"
+#include "utils/utils.h"
 #include <QMenuBar>
 #include <QTextCodec>
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+
+using std::string;
+using std::vector;
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -34,8 +38,8 @@ void MainWindow::openDatabase()
 
     if (!filePath.isEmpty()) {
         db_.init(filePath);
+        refreshAllPanels();
     }
-
 }
 
 void MainWindow::createMenus()
@@ -75,4 +79,16 @@ void MainWindow::createPanels()
     frame->setLayout(frameLayout);
 
     setCentralWidget(frame);
+}
+
+void MainWindow::refreshAllPanels()
+{
+    vector<CategoryStats> yearStats = db_.getYearStats();
+    vector<CategoryStats> bookTitleStats = db_.getBookTitleStats();
+
+    yearList_->clear();
+    yearList_->addItems(stats2QStringList(yearStats));
+
+    bookTitleList_->clear();
+    bookTitleList_->addItems(stats2QStringList(bookTitleStats));
 }
