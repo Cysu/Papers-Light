@@ -1,6 +1,7 @@
 #include "gui/MainWindow.h"
 #include <QMenuBar>
 #include <QTextCodec>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -25,6 +26,13 @@ void MainWindow::setCodecs(const char* codec)
 
 void MainWindow::openDatabase()
 {
+    QString filePath = QFileDialog::getOpenFileName(this,
+                                                    tr("Open a Database File"),
+                                                    QDir::homePath());
+
+    if (!filePath.isEmpty()) {
+        db_.init(filePath);
+    }
 
 }
 

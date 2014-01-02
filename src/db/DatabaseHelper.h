@@ -2,7 +2,7 @@
 #define DATABASEHELPER_H
 
 #include "common/Paper.h"
-#include <string>
+#include <QSqlDatabase>
 
 /**
  * @brief The DatabaseHelper class provides basic operations of papers
@@ -11,6 +11,9 @@
 class DatabaseHelper
 {
 public:
+    DatabaseHelper();
+    ~DatabaseHelper();
+
     /**
      * @brief Load the database from the file specified. Connect to it and set
      * it as default across the application. Create all the tables if the file
@@ -18,8 +21,7 @@ public:
      *
      * @param filePath The database file path
      */
-    DatabaseHelper(const std::string& filePath);
-    ~DatabaseHelper();
+    void init(const QString& filePath);
 
     const Paper& getPaper(int paperId);
 
@@ -30,7 +32,12 @@ public:
     bool removePaper(int paperId);
 
 private:
+    QSqlDatabase db_;
 
+private:
+    void createTables();
+
+    long long getLastInsertRowId();
 };
 
 #endif // DATABASEHELPER_H
