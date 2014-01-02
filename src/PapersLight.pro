@@ -17,7 +17,9 @@ SOURCES += \
     gui/CategoryList.cpp \
     gui/PaperList.cpp \
     gui/SearchBar.cpp \
-    gui/PaperInfoTable.cpp
+    gui/PaperInfoTable.cpp \
+    common/CategoryStats.cpp \
+    utils/utils.cpp
 
 HEADERS += \
     gui/MainWindow.h \
@@ -27,4 +29,6 @@ HEADERS += \
     gui/CategoryList.h \
     gui/PaperList.h \
     gui/SearchBar.h \
-    gui/PaperInfoTable.h
+    gui/PaperInfoTable.h \
+    common/CategoryStats.h \
+    utils/utils.h

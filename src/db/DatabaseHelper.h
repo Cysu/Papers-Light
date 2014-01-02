@@ -2,6 +2,7 @@
 #define DATABASEHELPER_H
 
 #include "common/Paper.h"
+#include "common/CategoryStats.h"
 #include <string>
 #include <vector>
 #include <QSqlDatabase>
@@ -25,7 +26,10 @@ public:
      */
     void init(const QString& filePath);
 
-    const Paper& getPaper(int paperId);
+    Paper getPaper(int paperId);
+
+    std::vector<CategoryStats> getYearStats();
+    std::vector<CategoryStats> getBookTitleStats();
 
     int addPaper(const Paper& paper);
     int addBookTitle(const std::string& bookTitle);

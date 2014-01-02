@@ -5,6 +5,7 @@
 
 using std::string;
 using std::vector;
+using std::to_string;
 
 DatabaseHelper::DatabaseHelper()
     : db_(QSqlDatabase::addDatabase("QSQLITE"))
@@ -24,6 +25,65 @@ void DatabaseHelper::init(const QString& filePath)
     db_.open();
 
     createTables();
+}
+
+vector<CategoryStats> DatabaseHelper::getYearStats()
+{
+    QSqlQuery query;
+    query.exec("SELECT DISTINCT year FROM pl_paper");
+
+    vector<int> years;
+    while (query.next()) {
+        int year = query.value(0).toInt();
+        years.push_back(year);
+    }
+
+    vector<CategoryStats> stats(years.size());
+    for (vector<CategoryStats>::size_type i = 0; i < stats.size(); ++i) {
+        char qBuf[BUFSIZE];
+        sprintf(qBuf,
+                "SELECT COUNT(*) FROM pl_paper WHERE year = %d",
+                years[i]);
+
+        query.exec(qBuf);
+        query.last();
+
+        stats[i].setName(to_string(static_cast<long long>(years[i])));
+        stats[i].setCount(query.value(0).toInt());
+    }
+
+    return stats;
+}
+
+vector<CategoryStats> DatabaseHelper::getBookTitleStats()
+{
+    QSqlQuery query;
+    query.exec("SELECT * FROM pl_book_title");
+
+    vector<int> bookTitlesId;
+    vector<string> bookTitlesName;
+    while (query.next()) {
+        int bookTitleId = query.value(0).toInt();
+        string bookTitleName = query.value(1).toString().toStdString();
+        bookTitlesId.push_back(bookTitleId);
+        bookTitlesName.push_back(bookTitleName);
+    }
+
+    vector<CategoryStats> stats(bookTitlesId.size());
+    for (vector<CategoryStats>::size_type i = 0; i < stats.size(); ++i) {
+        char qBuf[BUFSIZE];
+        sprintf(qBuf,
+                "SELECT COUNT(*) FROM pl_paper WHERE book_title_id = %d",
+                bookTitlesId[i]);
+
+        query.exec(qBuf);
+        query.last();
+
+        stats[i].setName(bookTitlesName[i]);
+        stats[i].setCount(query.value(0).toInt());
+    }
+
+    return stats;
 }
 
 int DatabaseHelper::addPaper(const Paper& paper)
@@ -143,6 +203,7 @@ int DatabaseHelper::getBookTitleId(const string& bookTitle)
     query.exec(qBuf);
 
     if (query.size() == -1) return -1;
+    query.last();
     return query.value(0).toInt();
 }
 
@@ -157,5 +218,6 @@ int DatabaseHelper::getAuthorId(const string& author)
     query.exec(qBuf);
 
     if (query.size() == -1) return -1;
+    query.last();
     return query.value(0).toInt();
 }
