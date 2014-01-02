@@ -13,10 +13,18 @@ SOURCES += \
     main.cpp\
     gui/MainWindow.cpp \
     db/DatabaseHelper.cpp \
-    common/Paper.cpp
+    common/Paper.cpp \
+    gui/CategoryList.cpp \
+    gui/PaperList.cpp \
+    gui/SearchBar.cpp \
+    gui/PaperInfoTable.cpp
 
 HEADERS += \
     gui/MainWindow.h \
     db/DatabaseHelper.h \
     common/Paper.h \
-    common/const.h
+    common/const.h \
+    gui/CategoryList.h \
+    gui/PaperList.h \
+    gui/SearchBar.h \
+    gui/PaperInfoTable.h
