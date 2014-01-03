@@ -36,6 +36,7 @@ public:
     int addPaper(const Paper& paper);
     int addBookTitle(const std::string& bookTitle);
     int addAuthor(const std::string& author);
+    int addTag(const std::string& tag);
 
     bool updatePaper(int paperId, const Paper& paper);
 
@@ -49,6 +50,7 @@ private:
 
     int getBookTitleId(const std::string& bookTitle);
     int getAuthorId(const std::string& author);
+    int getTagId(const std::string& tag);
 };
 
 #endif // DATABASEHELPER_H

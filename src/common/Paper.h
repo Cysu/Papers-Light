@@ -17,7 +17,9 @@ public:
     Paper(int year,
           const std::string& bookTitle,
           const std::string& title,
-          const std::vector<std::string>& authors);
+          const std::vector<std::string>& authors,
+          const std::vector<std::string>& tags,
+          const std::string& comment);
 
     ~Paper();
 
@@ -33,11 +35,19 @@ public:
     const std::vector<std::string>& getAuthors() const { return authors_; }
     void setAuthors(const std::vector<std::string>& authors) { authors_ = authors; }
 
+    const std::vector<std::string>& getTags() const { return tags_; }
+    void setTags(const std::vector<std::string>& tags) { tags_ = tags; }
+
+    const std::string& getComment() const { return comment_; }
+    void setComment(const std::string& comment) { comment_ = comment; }
+
 private:
     int year_;
     std::string bookTitle_;
     std::string title_;
     std::vector<std::string> authors_;
+    std::vector<std::string> tags_;
+    std::string comment_;
 };
 
 #endif // PAPER_H

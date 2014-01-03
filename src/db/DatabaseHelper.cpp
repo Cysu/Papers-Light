@@ -165,11 +165,22 @@ int DatabaseHelper::addPaper(const Paper& paper)
         authorsId[i] = authorId;
     }
 
+    vector<int> tagsId(paper.getTags().size());
+    for (vector<int>::size_type i = 0; i < paper.getTags().size(); ++i) {
+        const string& tag = paper.getTags().at(i);
+        int tagId = getTagId(tag);
+        if (tagId == -1) {
+            tagId = addTag(tag);
+        }
+        tagsId[i] = tagId;
+    }
+
     char qBuf[BUFSIZE];
     sprintf(qBuf,
-            "INSERT INTO pl_paper(year, book_title_id, title) "
-            "VALUES(%d, %d, \"%s\")",
-            paper.getYear(), bookTitleId, paper.getTitle().c_str());
+            "INSERT INTO pl_paper(year, book_title_id, title, comment) "
+            "VALUES(%d, %d, \"%s\", \"%s\")",
+            paper.getYear(), bookTitleId,
+            paper.getTitle().c_str(), paper.getComment().c_str());
 
     QSqlQuery query;
     query.exec(qBuf);
@@ -181,6 +192,15 @@ int DatabaseHelper::addPaper(const Paper& paper)
                 "INSERT INTO pl_paper2author(paper_id, author_id, author_order) "
                 "VALUES(%d, %d, %d)",
                 paperId, authorsId[i], i);
+
+        query.exec(qBuf);
+    }
+
+    for (int i = 0; i < static_cast<int>(tagsId.size()); ++i) {
+        sprintf(qBuf,
+                "INSERT INTO pl_paper2tag(paper_id, tag_id) "
+                "VALUES(%d, %d)",
+                paperId, tagsId[i]);
 
         query.exec(qBuf);
     }
@@ -209,6 +229,20 @@ int DatabaseHelper::addAuthor(const string& author)
             "INSERT INTO pl_author(author_name) "
             "VALUES(\"%s\")",
             author.c_str());
+
+    QSqlQuery query;
+    query.exec(qBuf);
+
+    return query.lastInsertId().toInt();
+}
+
+int DatabaseHelper::addTag(const string& tag)
+{
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "INSERT INTO pl_tag(tag_name) "
+            "VALUES(\"%s\")",
+            tag.c_str());
 
     QSqlQuery query;
     query.exec(qBuf);
@@ -264,8 +298,7 @@ int DatabaseHelper::getBookTitleId(const string& bookTitle)
     QSqlQuery query;
     query.exec(qBuf);
 
-    if (query.size() == -1) return -1;
-    query.last();
+    if (!query.last()) return -1;
     return query.value(0).toInt();
 }
 
@@ -279,7 +312,20 @@ int DatabaseHelper::getAuthorId(const string& author)
     QSqlQuery query;
     query.exec(qBuf);
 
-    if (query.size() == -1) return -1;
-    query.last();
+    if (!query.last()) return -1;
     return query.value(0).toInt();
+}
+
+int DatabaseHelper::getTagId(const string& tag)
+{
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "SELECT tag_id FROM pl_tag WHERE tag_name = \"%s\"",
+            tag.c_str());
+
+    QSqlQuery query;
+    query.exec(qBuf);
+
+    if (!query.last()) return -1;
+    return query.value(0).toInt(0);
 }
