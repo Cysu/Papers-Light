@@ -26,6 +26,11 @@ public:
      */
     void init(const QString& filePath);
 
+    /**
+     * @todo Should not expose SQL operations. Fix this.
+     */
+    QSqlQuery exec(const QString& query);
+
     Paper getPaper(int paperId);
     std::string getBookTitle(int bookTitleId);
     std::string getAuthor(int authorId);

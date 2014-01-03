@@ -27,11 +27,18 @@ void DatabaseHelper::init(const QString& filePath)
     createTables();
 }
 
+QSqlQuery DatabaseHelper::exec(const QString& query)
+{
+    QSqlQuery ret;
+    ret.exec(query);
+    return ret;
+}
+
 Paper DatabaseHelper::getPaper(int paperId)
 {
     char qBuf[BUFSIZE];
     sprintf(qBuf,
-            "SELECT (year, book_title_id, title, comment) FROM pl_paper WHERE paper_id = %d",
+            "SELECT year, book_title_id, title, comment FROM pl_paper WHERE paper_id = %d",
             paperId);
 
     QSqlQuery query;
@@ -46,7 +53,7 @@ Paper DatabaseHelper::getPaper(int paperId)
     paper.setComment(query.value(3).toString().toStdString());
 
     sprintf(qBuf,
-            "SELECT (author_id) FROM pl_paper2author WHERE paper_id = %d ORDER BY rowid ASC",
+            "SELECT author_id FROM pl_paper2author WHERE paper_id = %d ORDER BY rowid ASC",
             paperId);
 
     query.exec(qBuf);
@@ -58,7 +65,7 @@ Paper DatabaseHelper::getPaper(int paperId)
     }
 
     sprintf(qBuf,
-            "SELECT (tag_id) FROM pl_paper2tag WHERE paper_id = %d",
+            "SELECT tag_id FROM pl_paper2tag WHERE paper_id = %d",
             paperId);
 
     query.exec(qBuf);
@@ -79,7 +86,7 @@ string DatabaseHelper::getBookTitle(int bookTitleId)
 {
     char qBuf[BUFSIZE];
     sprintf(qBuf,
-            "SELECT (book_title_name) FROM pl_book_title WHERE book_title_id = %d",
+            "SELECT book_title_name FROM pl_book_title WHERE book_title_id = %d",
             bookTitleId);
 
     QSqlQuery query;
@@ -93,7 +100,7 @@ string DatabaseHelper::getAuthor(int authorId)
 {
     char qBuf[BUFSIZE];
     sprintf(qBuf,
-            "SELECT (author_name) FROM pl_author WHERE author_id = %d",
+            "SELECT author_name FROM pl_author WHERE author_id = %d",
             authorId);
 
     QSqlQuery query;
@@ -107,7 +114,7 @@ string DatabaseHelper::getTag(int tagId)
 {
     char qBuf[BUFSIZE];
     sprintf(qBuf,
-            "SELECT (tag_name) FROM pl_tag WHERE tag_id = %d",
+            "SELECT tag_name FROM pl_tag WHERE tag_id = %d",
             tagId);
 
     QSqlQuery query;

@@ -13,6 +13,11 @@ public:
     explicit PaperList(QWidget *parent = 0);
     ~PaperList();
 
+    void addItem(const QString& content);
+    void addItems(const QStringList& contents);
+
+    void clear();
+
 private:
     QListView* view_;
     QStandardItemModel* model_;

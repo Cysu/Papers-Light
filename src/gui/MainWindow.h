@@ -6,6 +6,7 @@
 #include "gui/PaperList.h"
 #include "gui/PaperInfoTable.h"
 #include "db/DatabaseHelper.h"
+#include "db/SearchHelper.h"
 #include <QMainWindow>
 
 class MainWindow : public QMainWindow
@@ -27,17 +28,29 @@ private:
     PaperList* paperList_;
     PaperInfoTable* paperInfoTable_;
 
-    DatabaseHelper db_;
+    std::vector<CategoryStats> yearStats_;
+    std::vector<CategoryStats> bookTitleStats_;
+    std::vector<CategoryStats> authorStats_;
+    std::vector<CategoryStats> tagStats_;
+
+    DatabaseHelper databaseHelper_;
+    SearchHelper searchHelper_;
 
 private slots:
-    void setCodecs(const char* codec = "UTF-8");
     void openDatabase();
+    void yearSelectedOnly(int index);
+    void bookTitleSelectedOnly(int index);
+    void authorSelectedOnly(int index);
+    void tagSelectedOnly(int index);
 
 private:
+    void setCodecs(const char* codec = "UTF-8");
+
     void createMenus();
     void createPanels();
 
     void refreshAllPanels();
+    void refreshPaperList();
 };
 
 #endif // MAINWINDOW_H

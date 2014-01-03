@@ -37,6 +37,11 @@ void CategoryList::clear()
     model_->clear();
 }
 
+void CategoryList::itemDoubleClicked(const QModelIndex& index)
+{
+    emit itemSelectedOnly(index.row());
+}
+
 void CategoryList::createPanels()
 {
     titleLabel_ = new QLabel(title_);
@@ -45,6 +50,7 @@ void CategoryList::createPanels()
     model_ = new QStandardItemModel;
 
     view_->setModel(model_);
+    connect(view_, &QListView::doubleClicked, this, &CategoryList::itemDoubleClicked);
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(titleLabel_);

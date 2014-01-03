@@ -34,6 +34,11 @@ private:
 
 private:
     bool hasFilter(const Filter& filter);
+
+    std::string getYearClause() const;
+    std::string getBookTitleClause() const;
+    std::string getAuthorClause() const;
+    std::string getTagClause() const;
 };
 
 #endif // SEARCHHELPER_H

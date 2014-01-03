@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QSqlQuery>
 
 using std::string;
 using std::vector;
@@ -14,7 +15,6 @@ MainWindow::MainWindow(QWidget* parent)
 {
     setCodecs("UTF-8");
     setWindowTitle(tr("Papers Light"));
-    showMaximized();
 
     createMenus();
     createPanels();
@@ -25,11 +25,6 @@ MainWindow::~MainWindow()
 
 }
 
-void MainWindow::setCodecs(const char* codec)
-{
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName(codec));
-}
-
 void MainWindow::openDatabase()
 {
     QString filePath = QFileDialog::getOpenFileName(this,
@@ -37,9 +32,62 @@ void MainWindow::openDatabase()
                                                     QDir::homePath());
 
     if (!filePath.isEmpty()) {
-        db_.init(filePath);
+        databaseHelper_.init(filePath);
         refreshAllPanels();
     }
+}
+
+void MainWindow::yearSelectedOnly(int index)
+{
+    searchHelper_.clear();
+
+    SearchHelper::Filter filter;
+    filter.first = SearchHelper::Year;
+    filter.second = yearStats_[index].getName();
+
+    searchHelper_.addFilter(filter);
+    refreshPaperList();
+}
+
+void MainWindow::bookTitleSelectedOnly(int index)
+{
+    searchHelper_.clear();
+
+    SearchHelper::Filter filter;
+    filter.first = SearchHelper::BookTitle;
+    filter.second = bookTitleStats_[index].getName();
+
+    searchHelper_.addFilter(filter);
+    refreshPaperList();
+}
+
+void MainWindow::authorSelectedOnly(int index)
+{
+    searchHelper_.clear();
+
+    SearchHelper::Filter filter;
+    filter.first = SearchHelper::Author;
+    filter.second = authorStats_[index].getName();
+
+    searchHelper_.addFilter(filter);
+    refreshPaperList();
+}
+
+void MainWindow::tagSelectedOnly(int index)
+{
+    searchHelper_.clear();
+
+    SearchHelper::Filter filter;
+    filter.first = SearchHelper::Tag;
+    filter.second = tagStats_[index].getName();
+
+    searchHelper_.addFilter(filter);
+    refreshPaperList();
+}
+
+void MainWindow::setCodecs(const char* codec)
+{
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName(codec));
 }
 
 void MainWindow::createMenus()
@@ -58,6 +106,11 @@ void MainWindow::createPanels()
     searchBar_ = new SearchBar;
     paperList_ = new PaperList;
     paperInfoTable_ = new PaperInfoTable;
+
+    connect(yearList_, &CategoryList::itemSelectedOnly, this, &MainWindow::yearSelectedOnly);
+    connect(bookTitleList_, &CategoryList::itemSelectedOnly, this, &MainWindow::bookTitleSelectedOnly);
+    connect(authorList_, &CategoryList::itemSelectedOnly, this, &MainWindow::authorSelectedOnly);
+    connect(tagList_, &CategoryList::itemSelectedOnly, this, &MainWindow::tagSelectedOnly);
 
     QVBoxLayout* leftPanelLayout = new QVBoxLayout;
     leftPanelLayout->addWidget(yearList_);
@@ -81,24 +134,45 @@ void MainWindow::createPanels()
     frame->setLayout(frameLayout);
 
     setCentralWidget(frame);
+
+    showMaximized();
 }
 
 void MainWindow::refreshAllPanels()
 {
-    vector<CategoryStats> yearStats = db_.getYearStats();
-    vector<CategoryStats> bookTitleStats = db_.getBookTitleStats();
-    vector<CategoryStats> authorStats = db_.getAuthorStats();
-    vector<CategoryStats> tagStats = db_.getTagStats();
+    yearStats_ = databaseHelper_.getYearStats();
+    bookTitleStats_ = databaseHelper_.getBookTitleStats();
+    authorStats_ = databaseHelper_.getAuthorStats();
+    tagStats_ = databaseHelper_.getTagStats();
 
     yearList_->clear();
-    yearList_->addItems(stats2QStringList(yearStats));
+    yearList_->addItems(stats2QStringList(yearStats_));
 
     bookTitleList_->clear();
-    bookTitleList_->addItems(stats2QStringList(bookTitleStats));
+    bookTitleList_->addItems(stats2QStringList(bookTitleStats_));
 
     authorList_->clear();
-    authorList_->addItems(stats2QStringList(authorStats));
+    authorList_->addItems(stats2QStringList(authorStats_));
 
     tagList_->clear();
-    tagList_->addItems(stats2QStringList(tagStats));
+    tagList_->addItems(stats2QStringList(tagStats_));
+
+    searchHelper_.clear();
+
+    refreshPaperList();
+}
+
+void MainWindow::refreshPaperList()
+{
+    string queryString = searchHelper_.getSqlQueryString();
+    QSqlQuery query = databaseHelper_.exec(queryString.c_str());
+
+    vector<Paper> papers;
+    while (query.next()) {
+        int paperId = query.value(0).toInt();
+        papers.push_back(databaseHelper_.getPaper(paperId));
+    }
+
+    paperList_->clear();
+    paperList_->addItems(papers2QStringList(papers));
 }
