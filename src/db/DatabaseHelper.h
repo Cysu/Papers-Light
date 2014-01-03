@@ -27,6 +27,9 @@ public:
     void init(const QString& filePath);
 
     Paper getPaper(int paperId);
+    std::string getBookTitle(int bookTitleId);
+    std::string getAuthor(int authorId);
+    std::string getTag(int tagId);
 
     std::vector<CategoryStats> getYearStats();
     std::vector<CategoryStats> getBookTitleStats();

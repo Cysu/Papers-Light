@@ -7,12 +7,16 @@
 class Paper
 {
 public:
+    Paper();
+
     /**
      * @brief Paper contains basic information of a paper
      * @param year The year when the paper is published
      * @param bookTitle The conference, journal or book where the paper is published
      * @param title The title of the paper
      * @param authors The authors list of the paper
+     * @param tags The tags list of the paper
+     * @param comment The comment of the paper
      */
     Paper(int year,
           const std::string& bookTitle,
@@ -22,6 +26,8 @@ public:
           const std::string& comment);
 
     ~Paper();
+
+    bool isNull() const;
 
     int getYear() const { return year_; }
     void setYear(int year) { year_ = year; }

@@ -3,6 +3,17 @@
 using std::vector;
 using std::string;
 
+Paper::Paper()
+    : year_(-1),
+      bookTitle_(),
+      title_(),
+      authors_(),
+      tags_(),
+      comment_()
+{
+
+}
+
 Paper::Paper(int year,
              const string& bookTitle,
              const string& title,
@@ -22,4 +33,9 @@ Paper::Paper(int year,
 Paper::~Paper()
 {
 
+}
+
+bool Paper::isNull() const
+{
+    return year_ == -1;
 }
