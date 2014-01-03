@@ -86,6 +86,68 @@ vector<CategoryStats> DatabaseHelper::getBookTitleStats()
     return stats;
 }
 
+vector<CategoryStats> DatabaseHelper::getAuthorStats()
+{
+    QSqlQuery query;
+    query.exec("SELECT * FROM pl_author");
+
+    vector<int> authorsId;
+    vector<string> authorsName;
+    while (query.next()) {
+        int authorId = query.value(0).toInt();
+        string authorName = query.value(1).toString().toStdString();
+        authorsId.push_back(authorId);
+        authorsName.push_back(authorName);
+    }
+
+    vector<CategoryStats> stats(authorsId.size());
+    for (vector<CategoryStats>::size_type i = 0; i < stats.size(); ++i) {
+        char qBuf[BUFSIZE];
+        sprintf(qBuf,
+                "SELECT COUNT(*) FROM pl_paper2author WHERE author_id = %d",
+                authorsId[i]);
+
+        query.exec(qBuf);
+        query.last();
+
+        stats[i].setName(authorsName[i]);
+        stats[i].setCount(query.value(0).toInt());
+    }
+
+    return stats;
+}
+
+vector<CategoryStats> DatabaseHelper::getTagStats()
+{
+    QSqlQuery query;
+    query.exec("SELECT * FROM pl_tag");
+
+    vector<int> tagsId;
+    vector<string> tagsName;
+    while (query.next()) {
+        int tagId = query.value(0).toInt();
+        string tagName = query.value(1).toString().toStdString();
+        tagsId.push_back(tagId);
+        tagsName.push_back(tagName);
+    }
+
+    vector<CategoryStats> stats(tagsId.size());
+    for (vector<CategoryStats>::size_type i = 0; i < stats.size(); ++i) {
+        char qBuf[BUFSIZE];
+        sprintf(qBuf,
+                "SELECT COUNT(*) FROM pl_paper2tag WHERE tag_id = %d",
+                tagsId[i]);
+
+        query.exec(qBuf);
+        query.last();
+
+        stats[i].setName(tagsName[i]);
+        stats[i].setCount(query.value(0).toInt());
+    }
+
+    return stats;
+}
+
 int DatabaseHelper::addPaper(const Paper& paper)
 {
     int bookTitleId = getBookTitleId(paper.getBookTitle());

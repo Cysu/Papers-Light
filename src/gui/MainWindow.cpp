@@ -53,6 +53,7 @@ void MainWindow::createPanels()
 {
     yearList_ = new CategoryList(tr("Year"));
     bookTitleList_ = new CategoryList(tr("Book Title"));
+    authorList_ = new CategoryList(tr("Author"));
     tagList_ = new CategoryList(tr("Tag"));
     searchBar_ = new SearchBar;
     paperList_ = new PaperList;
@@ -61,6 +62,7 @@ void MainWindow::createPanels()
     QVBoxLayout* leftPanelLayout = new QVBoxLayout;
     leftPanelLayout->addWidget(yearList_);
     leftPanelLayout->addWidget(bookTitleList_);
+    leftPanelLayout->addWidget(authorList_);
     leftPanelLayout->addWidget(tagList_);
 
     QVBoxLayout* middlePanelLayout = new QVBoxLayout;
@@ -85,10 +87,18 @@ void MainWindow::refreshAllPanels()
 {
     vector<CategoryStats> yearStats = db_.getYearStats();
     vector<CategoryStats> bookTitleStats = db_.getBookTitleStats();
+    vector<CategoryStats> authorStats = db_.getAuthorStats();
+    vector<CategoryStats> tagStats = db_.getTagStats();
 
     yearList_->clear();
     yearList_->addItems(stats2QStringList(yearStats));
 
     bookTitleList_->clear();
     bookTitleList_->addItems(stats2QStringList(bookTitleStats));
+
+    authorList_->clear();
+    authorList_->addItems(stats2QStringList(authorStats));
+
+    tagList_->clear();
+    tagList_->addItems(stats2QStringList(tagStats));
 }

@@ -30,6 +30,8 @@ public:
 
     std::vector<CategoryStats> getYearStats();
     std::vector<CategoryStats> getBookTitleStats();
+    std::vector<CategoryStats> getAuthorStats();
+    std::vector<CategoryStats> getTagStats();
 
     int addPaper(const Paper& paper);
     int addBookTitle(const std::string& bookTitle);

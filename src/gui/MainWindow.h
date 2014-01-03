@@ -21,6 +21,7 @@ private:
 
     CategoryList* yearList_;
     CategoryList* bookTitleList_;
+    CategoryList* authorList_;
     CategoryList* tagList_;
     SearchBar* searchBar_;
     PaperList* paperList_;
