@@ -15,6 +15,16 @@ static QString list2QString(const vector<string>& list)
     return ret;
 }
 
+vector<string> QString2list(const QString& qstring)
+{
+    QStringList qstringlist = qstring.split(",");
+    vector<string> ret(qstringlist.size());
+    for (vector<string>::size_type i = 0; i < ret.size(); ++i) {
+        ret[i] = qstringlist[i].toStdString();
+    }
+    return ret;
+}
+
 PaperInfoTable::PaperInfoTable(QWidget* parent)
     : QWidget(parent),
       year_(nullptr),
@@ -32,14 +42,30 @@ PaperInfoTable::~PaperInfoTable()
 
 }
 
+const Paper& PaperInfoTable::getPaper() const
+{
+    return paper_;
+}
+
 void PaperInfoTable::setPaper(const Paper& paper)
 {
+    paper_ = paper;
     year_->setText(QString::number(paper.getYear()));
     bookTitle_->setText(paper.getBookTitle().c_str());
     title_->setText(paper.getTitle().c_str());
     authors_->setText(list2QString(paper.getAuthors()));
     tags_->setText(list2QString(paper.getTags()));
     comment_->setText(paper.getComment().c_str());
+}
+
+void PaperInfoTable::saveChanges()
+{
+    paper_.setYear(year_->text().toInt());
+    paper_.setBookTitle(bookTitle_->text().toStdString());
+    paper_.setTitle(title_->text().toStdString());
+    paper_.setAuthors(QString2list(authors_->text()));
+    paper_.setTags(QString2list(tags_->text()));
+    paper_.setComment(comment_->toPlainText().toStdString());
 }
 
 void PaperInfoTable::createPanels()

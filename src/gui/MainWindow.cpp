@@ -90,6 +90,14 @@ void MainWindow::paperSelectedOnly(int index)
     paperInfoTable_->setPaper(papers_[index]);
 }
 
+void MainWindow::savePaperInfo()
+{
+    paperInfoTable_->saveChanges();
+    databaseHelper_.updatePaper(paperInfoTable_->getPaper());
+
+    refreshAllPanels();
+}
+
 void MainWindow::setCodecs(const char* codec)
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName(codec));
@@ -112,11 +120,14 @@ void MainWindow::createPanels()
     paperList_ = new PaperList;
     paperInfoTable_ = new PaperInfoTable;
 
+    QPushButton* paperInfoSaveButton = new QPushButton(tr("Save"));
+
     connect(yearList_, &CategoryList::itemSelectedOnly, this, &MainWindow::yearSelectedOnly);
     connect(bookTitleList_, &CategoryList::itemSelectedOnly, this, &MainWindow::bookTitleSelectedOnly);
     connect(authorList_, &CategoryList::itemSelectedOnly, this, &MainWindow::authorSelectedOnly);
     connect(tagList_, &CategoryList::itemSelectedOnly, this, &MainWindow::tagSelectedOnly);
     connect(paperList_, &PaperList::itemSelectedOnly, this, &MainWindow::paperSelectedOnly);
+    connect(paperInfoSaveButton, &QPushButton::clicked, this, &MainWindow::savePaperInfo);
 
     QVBoxLayout* leftPanelLayout = new QVBoxLayout;
     leftPanelLayout->addWidget(yearList_);
@@ -130,6 +141,7 @@ void MainWindow::createPanels()
 
     QVBoxLayout* rightPanelLayout = new QVBoxLayout;
     rightPanelLayout->addWidget(paperInfoTable_);
+    rightPanelLayout->addWidget(paperInfoSaveButton);
 
     QHBoxLayout* frameLayout = new QHBoxLayout;
     frameLayout->addLayout(leftPanelLayout);

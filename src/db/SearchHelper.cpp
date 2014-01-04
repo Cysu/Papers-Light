@@ -56,6 +56,7 @@ string SearchHelper::getSqlQueryString() const
     query += bookTitleClause + " AND ";
     query += authorClause + " AND ";
     query += tagClause;
+    query += " ORDER BY pl_paper.paper_id ASC";
     return query;
 }
 

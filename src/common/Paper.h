@@ -11,6 +11,7 @@ public:
 
     /**
      * @brief Paper contains basic information of a paper
+     * @param id The id of the paper in the database
      * @param year The year when the paper is published
      * @param bookTitle The conference, journal or book where the paper is published
      * @param title The title of the paper
@@ -18,7 +19,8 @@ public:
      * @param tags The tags list of the paper
      * @param comment The comment of the paper
      */
-    Paper(int year,
+    Paper(int id,
+          int year,
           const std::string& bookTitle,
           const std::string& title,
           const std::vector<std::string>& authors,
@@ -28,6 +30,9 @@ public:
     ~Paper();
 
     bool isNull() const;
+
+    int getId() const { return id_; }
+    void setId(int id) { id_ = id; }
 
     int getYear() const { return year_; }
     void setYear(int year) { year_ = year; }
@@ -48,6 +53,7 @@ public:
     void setComment(const std::string& comment) { comment_ = comment; }
 
 private:
+    int id_;
     int year_;
     std::string bookTitle_;
     std::string title_;

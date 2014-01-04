@@ -44,6 +44,7 @@ private slots:
     void authorSelectedOnly(int index);
     void tagSelectedOnly(int index);
     void paperSelectedOnly(int index);
+    void savePaperInfo();
 
 private:
     void setCodecs(const char* codec = "UTF-8");

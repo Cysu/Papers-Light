@@ -4,7 +4,8 @@ using std::vector;
 using std::string;
 
 Paper::Paper()
-    : year_(-1),
+    : id_(-1),
+      year_(),
       bookTitle_(),
       title_(),
       authors_(),
@@ -14,13 +15,15 @@ Paper::Paper()
 
 }
 
-Paper::Paper(int year,
+Paper::Paper(int id,
+             int year,
              const string& bookTitle,
              const string& title,
              const vector<string>& authors,
              const vector<string>& tags,
              const string& comment)
-    : year_(year),
+    : id_(id),
+      year_(year),
       bookTitle_(bookTitle),
       title_(title),
       authors_(authors),
@@ -37,5 +40,5 @@ Paper::~Paper()
 
 bool Paper::isNull() const
 {
-    return year_ == -1;
+    return id_ == -1;
 }

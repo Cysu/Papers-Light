@@ -46,8 +46,9 @@ public:
     int addAuthor(const std::string& author);
     int addTag(const std::string& tag);
 
-    bool updatePaper(int paperId, const Paper& paper);
+    void updatePaper(const Paper& paper);
 
+    bool removePaper(const Paper& paper);
     bool removePaper(int paperId);
 
 private:

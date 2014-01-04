@@ -47,6 +47,7 @@ Paper DatabaseHelper::getPaper(int paperId)
     Paper paper;
     if (!query.last()) return paper;
 
+    paper.setId(paperId);
     paper.setYear(query.value(0).toInt());
     paper.setBookTitle(getBookTitle(query.value(1).toInt()));
     paper.setTitle(query.value(2).toString().toStdString());
@@ -273,11 +274,19 @@ int DatabaseHelper::addPaper(const Paper& paper)
     }
 
     char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "INSERT INTO pl_paper(year, book_title_id, title, comment) "
-            "VALUES(%d, %d, \"%s\", \"%s\")",
-            paper.getYear(), bookTitleId,
-            paper.getTitle().c_str(), paper.getComment().c_str());
+    if (paper.getId() <= 0) {
+        sprintf(qBuf,
+                "INSERT INTO pl_paper(year, book_title_id, title, comment) "
+                "VALUES(%d, %d, \"%s\", \"%s\")",
+                paper.getYear(), bookTitleId,
+                paper.getTitle().c_str(), paper.getComment().c_str());
+    } else {
+        sprintf(qBuf,
+                "INSERT INTO pl_paper(paper_id, year, book_title_id, title, comment) "
+                "VALUES(%d, %d, %d, \"%s\", \"%s\")",
+                paper.getId(), paper.getYear(), bookTitleId,
+                paper.getTitle().c_str(), paper.getComment().c_str());
+    }
 
     QSqlQuery query;
     query.exec(qBuf);
@@ -347,9 +356,32 @@ int DatabaseHelper::addTag(const string& tag)
     return query.lastInsertId().toInt();
 }
 
+void DatabaseHelper::updatePaper(const Paper& paper)
+{
+    removePaper(paper.getId());
+    addPaper(paper);
+}
+
+bool DatabaseHelper::removePaper(const Paper& paper)
+{
+    return removePaper(paper.getId());
+}
+
+bool DatabaseHelper::removePaper(int paperId)
+{
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "DELETE FROM pl_paper WHERE paper_id = %d",
+            paperId);
+
+    QSqlQuery query;
+    return query.exec(qBuf);
+}
+
 void DatabaseHelper::createTables()
 {
     QSqlQuery query;
+    query.exec("PRAGMA foreign_keys = ON");
     query.exec("CREATE TABLE IF NOT EXISTS pl_paper("
                "    paper_id INTEGER PRIMARY KEY,"
                "    year SMALLINT,"

@@ -14,7 +14,10 @@ public:
     explicit PaperInfoTable(QWidget* parent = 0);
     ~PaperInfoTable();
 
+    const Paper& getPaper() const;
     void setPaper(const Paper& paper);
+
+    void saveChanges();
 
 private:
     QLineEdit* year_;
@@ -23,6 +26,8 @@ private:
     QLineEdit* authors_;
     QLineEdit* tags_;
     QTextEdit* comment_;
+
+    Paper paper_;
 
 private:
     void createPanels();
