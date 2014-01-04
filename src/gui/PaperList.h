@@ -18,9 +18,15 @@ public:
 
     void clear();
 
+signals:
+    void itemSelectedOnly(int index);
+
 private:
     QListView* view_;
     QStandardItemModel* model_;
+
+private:
+    void itemDoubleClicked(const QModelIndex& index);
 
 private:
     void createPanels();

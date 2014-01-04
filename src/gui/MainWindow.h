@@ -32,6 +32,7 @@ private:
     std::vector<CategoryStats> bookTitleStats_;
     std::vector<CategoryStats> authorStats_;
     std::vector<CategoryStats> tagStats_;
+    std::vector<Paper> papers_;
 
     DatabaseHelper databaseHelper_;
     SearchHelper searchHelper_;
@@ -42,6 +43,7 @@ private slots:
     void bookTitleSelectedOnly(int index);
     void authorSelectedOnly(int index);
     void tagSelectedOnly(int index);
+    void paperSelectedOnly(int index);
 
 private:
     void setCodecs(const char* codec = "UTF-8");

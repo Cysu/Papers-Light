@@ -2,6 +2,19 @@
 #include <QLabel>
 #include <QGridLayout>
 
+using std::string;
+using std::vector;
+
+static QString list2QString(const vector<string>& list)
+{
+    QString ret;
+    for (vector<string>::size_type i = 0; i < list.size(); ++i) {
+        ret += list[i].c_str();
+        if (i != list.size()-1) ret += ",";
+    }
+    return ret;
+}
+
 PaperInfoTable::PaperInfoTable(QWidget* parent)
     : QWidget(parent),
       year_(nullptr),
@@ -17,6 +30,16 @@ PaperInfoTable::PaperInfoTable(QWidget* parent)
 PaperInfoTable::~PaperInfoTable()
 {
 
+}
+
+void PaperInfoTable::setPaper(const Paper& paper)
+{
+    year_->setText(QString::number(paper.getYear()));
+    bookTitle_->setText(paper.getBookTitle().c_str());
+    title_->setText(paper.getTitle().c_str());
+    authors_->setText(list2QString(paper.getAuthors()));
+    tags_->setText(list2QString(paper.getTags()));
+    comment_->setText(paper.getComment().c_str());
 }
 
 void PaperInfoTable::createPanels()

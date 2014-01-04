@@ -85,6 +85,11 @@ void MainWindow::tagSelectedOnly(int index)
     refreshPaperList();
 }
 
+void MainWindow::paperSelectedOnly(int index)
+{
+    paperInfoTable_->setPaper(papers_[index]);
+}
+
 void MainWindow::setCodecs(const char* codec)
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName(codec));
@@ -111,6 +116,7 @@ void MainWindow::createPanels()
     connect(bookTitleList_, &CategoryList::itemSelectedOnly, this, &MainWindow::bookTitleSelectedOnly);
     connect(authorList_, &CategoryList::itemSelectedOnly, this, &MainWindow::authorSelectedOnly);
     connect(tagList_, &CategoryList::itemSelectedOnly, this, &MainWindow::tagSelectedOnly);
+    connect(paperList_, &PaperList::itemSelectedOnly, this, &MainWindow::paperSelectedOnly);
 
     QVBoxLayout* leftPanelLayout = new QVBoxLayout;
     leftPanelLayout->addWidget(yearList_);
@@ -167,12 +173,12 @@ void MainWindow::refreshPaperList()
     string queryString = searchHelper_.getSqlQueryString();
     QSqlQuery query = databaseHelper_.exec(queryString.c_str());
 
-    vector<Paper> papers;
+    papers_.clear();
     while (query.next()) {
         int paperId = query.value(0).toInt();
-        papers.push_back(databaseHelper_.getPaper(paperId));
+        papers_.push_back(databaseHelper_.getPaper(paperId));
     }
 
     paperList_->clear();
-    paperList_->addItems(papers2QStringList(papers));
+    paperList_->addItems(papers2QStringList(papers_));
 }

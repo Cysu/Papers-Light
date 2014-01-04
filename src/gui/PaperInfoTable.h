@@ -1,6 +1,7 @@
 #ifndef PAPERINFOTABLE_H
 #define PAPERINFOTABLE_H
 
+#include "common/Paper.h"
 #include <QWidget>
 #include <QLineEdit>
 #include <QTextEdit>
@@ -12,6 +13,8 @@ class PaperInfoTable : public QWidget
 public:
     explicit PaperInfoTable(QWidget* parent = 0);
     ~PaperInfoTable();
+
+    void setPaper(const Paper& paper);
 
 private:
     QLineEdit* year_;
