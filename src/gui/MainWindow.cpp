@@ -49,6 +49,11 @@ void MainWindow::newPaper()
     paperInfoTable_->setPaper(paper);
 }
 
+void MainWindow::editPreference()
+{
+
+}
+
 void MainWindow::yearSelectedOnly(int index)
 {
     searchHelper_.clear();
@@ -125,6 +130,10 @@ void MainWindow::createMenus()
     newPaperAction_ = fileMenu->addAction(tr("New Paper"));
     newPaperAction_->setShortcut(QKeySequence::New);
     connect(newPaperAction_, &QAction::triggered, this, &MainWindow::newPaper);
+
+    QMenu* editMenu = menuBar()->addMenu(tr("&Edit"));
+    editPreferenceAction_ = editMenu->addAction(tr("Edit Preference"));
+    connect(editPreferenceAction_, &QAction::triggered, this, &MainWindow::editPreference);
 }
 
 void MainWindow::createPanels()

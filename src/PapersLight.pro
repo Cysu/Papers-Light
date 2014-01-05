@@ -20,7 +20,8 @@ SOURCES += \
     gui/PaperInfoTable.cpp \
     common/CategoryStats.cpp \
     utils/utils.cpp \
-    db/SearchHelper.cpp
+    db/SearchHelper.cpp \
+    utils/PreferenceManager.cpp
 
 HEADERS += \
     gui/MainWindow.h \
@@ -33,4 +34,5 @@ HEADERS += \
     gui/PaperInfoTable.h \
     common/CategoryStats.h \
     utils/utils.h \
-    db/SearchHelper.h
+    db/SearchHelper.h \
+    utils/PreferenceManager.h

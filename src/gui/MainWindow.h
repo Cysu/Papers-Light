@@ -20,6 +20,7 @@ public:
 private:
     QAction* openDatabaseAction_;
     QAction* newPaperAction_;
+    QAction* editPreferenceAction_;
 
     CategoryList* yearList_;
     CategoryList* bookTitleList_;
@@ -41,11 +42,14 @@ private:
 private slots:
     void openDatabase();
     void newPaper();
+    void editPreference();
+
     void yearSelectedOnly(int index);
     void bookTitleSelectedOnly(int index);
     void authorSelectedOnly(int index);
     void tagSelectedOnly(int index);
     void paperSelectedOnly(int index);
+
     void savePaperInfo();
 
 private:
