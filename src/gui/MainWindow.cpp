@@ -37,6 +37,18 @@ void MainWindow::openDatabase()
     }
 }
 
+void MainWindow::newPaper()
+{
+    Paper paper;
+    paper.setId(0);
+    paper.setTitle("Untitled");
+
+    papers_.push_back(paper);
+    paperList_->addItem(paper.getTitle().c_str());
+
+    paperInfoTable_->setPaper(paper);
+}
+
 void MainWindow::yearSelectedOnly(int index)
 {
     searchHelper_.clear();
@@ -108,6 +120,11 @@ void MainWindow::createMenus()
     QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
     openDatabaseAction_ = fileMenu->addAction(tr("Open Database File"));
     connect(openDatabaseAction_, &QAction::triggered, this, &MainWindow::openDatabase);
+
+    fileMenu->addSeparator();
+    newPaperAction_ = fileMenu->addAction(tr("New Paper"));
+    newPaperAction_->setShortcut(QKeySequence::New);
+    connect(newPaperAction_, &QAction::triggered, this, &MainWindow::newPaper);
 }
 
 void MainWindow::createPanels()
