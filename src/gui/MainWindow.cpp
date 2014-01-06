@@ -1,4 +1,5 @@
 #include "gui/MainWindow.h"
+#include "gui/PreferencesDialog.h"
 #include "utils/utils.h"
 #include <QMenuBar>
 #include <QTextCodec>
@@ -49,9 +50,10 @@ void MainWindow::newPaper()
     paperInfoTable_->setPaper(paper);
 }
 
-void MainWindow::editPreference()
+void MainWindow::editPreferences()
 {
-
+    PreferencesDialog preferencesDialog;
+    preferencesDialog.exec();
 }
 
 void MainWindow::yearSelectedOnly(int index)
@@ -132,8 +134,8 @@ void MainWindow::createMenus()
     connect(newPaperAction_, &QAction::triggered, this, &MainWindow::newPaper);
 
     QMenu* editMenu = menuBar()->addMenu(tr("&Edit"));
-    editPreferenceAction_ = editMenu->addAction(tr("Edit Preference"));
-    connect(editPreferenceAction_, &QAction::triggered, this, &MainWindow::editPreference);
+    editPreferencesAction_ = editMenu->addAction(tr("Edit Preference"));
+    connect(editPreferencesAction_, &QAction::triggered, this, &MainWindow::editPreferences);
 }
 
 void MainWindow::createPanels()

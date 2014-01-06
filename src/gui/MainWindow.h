@@ -20,7 +20,7 @@ public:
 private:
     QAction* openDatabaseAction_;
     QAction* newPaperAction_;
-    QAction* editPreferenceAction_;
+    QAction* editPreferencesAction_;
 
     CategoryList* yearList_;
     CategoryList* bookTitleList_;
@@ -42,7 +42,7 @@ private:
 private slots:
     void openDatabase();
     void newPaper();
-    void editPreference();
+    void editPreferences();
 
     void yearSelectedOnly(int index);
     void bookTitleSelectedOnly(int index);

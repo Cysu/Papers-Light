@@ -21,7 +21,8 @@ SOURCES += \
     common/CategoryStats.cpp \
     utils/utils.cpp \
     db/SearchHelper.cpp \
-    utils/PreferenceManager.cpp
+    gui/PreferencesDialog.cpp \
+    utils/PreferencesManager.cpp
 
 HEADERS += \
     gui/MainWindow.h \
@@ -35,4 +36,5 @@ HEADERS += \
     common/CategoryStats.h \
     utils/utils.h \
     db/SearchHelper.h \
-    utils/PreferenceManager.h
+    gui/PreferencesDialog.h \
+    utils/PreferencesManager.h
