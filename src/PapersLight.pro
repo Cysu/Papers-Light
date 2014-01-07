@@ -38,3 +38,6 @@ HEADERS += \
     db/SearchHelper.h \
     gui/PreferencesDialog.h \
     utils/PreferencesManager.h
+
+RESOURCES += \
+    resources.qrc

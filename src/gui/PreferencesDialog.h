@@ -20,6 +20,10 @@ private:
     QLineEdit* databaseFilePath_;
 
 private:
+    void choosePaperFolder();
+    void chooseDatabaseFile();
+
+private:
     void createPanels();
     void loadPreferences();
 };
