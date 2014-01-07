@@ -41,6 +41,7 @@ private:
 
 private slots:
     void openDatabase();
+    void openDefaultDatabase();
     void newPaper();
     void editPreferences();
 

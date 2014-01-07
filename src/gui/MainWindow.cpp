@@ -1,6 +1,7 @@
 #include "gui/MainWindow.h"
 #include "gui/PreferencesDialog.h"
 #include "utils/utils.h"
+#include "utils/PreferencesManager.h"
 #include <QMenuBar>
 #include <QTextCodec>
 #include <QFileDialog>
@@ -19,6 +20,8 @@ MainWindow::MainWindow(QWidget* parent)
 
     createMenus();
     createPanels();
+
+    openDefaultDatabase();
 }
 
 MainWindow::~MainWindow()
@@ -31,6 +34,16 @@ void MainWindow::openDatabase()
     QString filePath = QFileDialog::getOpenFileName(this,
                                                     tr("Open a Database File"),
                                                     QDir::homePath());
+
+    if (!filePath.isEmpty()) {
+        databaseHelper_.init(filePath);
+        refreshAllPanels();
+    }
+}
+
+void MainWindow::openDefaultDatabase()
+{
+    QString filePath = PreferencesManager::instance().getDatabaseFilePath();
 
     if (!filePath.isEmpty()) {
         databaseHelper_.init(filePath);

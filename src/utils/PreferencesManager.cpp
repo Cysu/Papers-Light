@@ -12,7 +12,7 @@ PreferencesManager& PreferencesManager::instance()
 
 PreferencesManager::PreferencesManager()
 {
-    QString preferenceFilePath = QDir::homePath() + "/" + PREFERENCE_FILENAME;
+    QString preferenceFilePath = QDir(QDir::homePath()).filePath(PREFERENCE_FILENAME);
 
     QFile preferenceFile(preferenceFilePath);
 

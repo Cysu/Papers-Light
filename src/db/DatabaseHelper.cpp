@@ -38,7 +38,7 @@ Paper DatabaseHelper::getPaper(int paperId)
 {
     char qBuf[BUFSIZE];
     sprintf(qBuf,
-            "SELECT year, book_title_id, title, comment FROM pl_paper WHERE paper_id = %d",
+            "SELECT year, book_title_id, title, path, comment FROM pl_paper WHERE paper_id = %d",
             paperId);
 
     QSqlQuery query;
@@ -51,7 +51,8 @@ Paper DatabaseHelper::getPaper(int paperId)
     paper.setYear(query.value(0).toInt());
     paper.setBookTitle(getBookTitle(query.value(1).toInt()));
     paper.setTitle(query.value(2).toString().toStdString());
-    paper.setComment(query.value(3).toString().toStdString());
+    paper.setPath(query.value(3).toString().toStdString());
+    paper.setComment(query.value(4).toString().toStdString());
 
     sprintf(qBuf,
             "SELECT author_id FROM pl_paper2author WHERE paper_id = %d ORDER BY rowid ASC",
@@ -276,16 +277,20 @@ int DatabaseHelper::addPaper(const Paper& paper)
     char qBuf[BUFSIZE];
     if (paper.getId() <= 0) {
         sprintf(qBuf,
-                "INSERT INTO pl_paper(year, book_title_id, title, comment) "
-                "VALUES(%d, %d, \"%s\", \"%s\")",
+                "INSERT INTO pl_paper(year, book_title_id, title, path, comment) "
+                "VALUES(%d, %d, \"%s\", \"%s\", \"%s\")",
                 paper.getYear(), bookTitleId,
-                paper.getTitle().c_str(), paper.getComment().c_str());
+                paper.getTitle().c_str(),
+                paper.getPath().c_str(),
+                paper.getComment().c_str());
     } else {
         sprintf(qBuf,
-                "INSERT INTO pl_paper(paper_id, year, book_title_id, title, comment) "
-                "VALUES(%d, %d, %d, \"%s\", \"%s\")",
+                "INSERT INTO pl_paper(paper_id, year, book_title_id, title, path, comment) "
+                "VALUES(%d, %d, %d, \"%s\", \"%s\", \"%s\")",
                 paper.getId(), paper.getYear(), bookTitleId,
-                paper.getTitle().c_str(), paper.getComment().c_str());
+                paper.getTitle().c_str(),
+                paper.getPath().c_str(),
+                paper.getComment().c_str());
     }
 
     QSqlQuery query;
@@ -387,6 +392,7 @@ void DatabaseHelper::createTables()
                "    year SMALLINT,"
                "    book_title_id INT,"
                "    title TEXT NOT NULL,"
+               "    path TEXT,"
                "    comment TEXT)");
 
     query.exec("CREATE TABLE IF NOT EXISTS pl_author("

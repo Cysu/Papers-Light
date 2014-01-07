@@ -25,9 +25,13 @@ private:
     QLineEdit* title_;
     QLineEdit* authors_;
     QLineEdit* tags_;
+    QLineEdit* path_;
     QTextEdit* comment_;
 
     Paper paper_;
+
+private slots:
+    void chooseFilePath();
 
 private:
     void createPanels();

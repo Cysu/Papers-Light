@@ -10,6 +10,7 @@ Paper::Paper()
       title_(),
       authors_(),
       tags_(),
+      path_(),
       comment_()
 {
 
@@ -21,6 +22,7 @@ Paper::Paper(int id,
              const string& title,
              const vector<string>& authors,
              const vector<string>& tags,
+             const string& path,
              const string& comment)
     : id_(id),
       year_(year),
@@ -28,6 +30,7 @@ Paper::Paper(int id,
       title_(title),
       authors_(authors),
       tags_(tags),
+      path_(path),
       comment_(comment)
 {
 
