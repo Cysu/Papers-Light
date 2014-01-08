@@ -21,6 +21,7 @@ static QString list2QString(const vector<string>& list)
 
 static vector<string> QString2list(const QString& qstring)
 {
+    if (qstring.isEmpty()) return vector<string>();
     QStringList qstringlist = qstring.split(",");
     vector<string> ret(qstringlist.size());
     for (vector<string>::size_type i = 0; i < ret.size(); ++i) {

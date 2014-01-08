@@ -48,8 +48,8 @@ public:
 
     int updatePaper(const Paper& paper);
 
-    bool removePaper(const Paper& paper);
-    bool removePaper(int paperId);
+    void removePaper(const Paper& paper);
+    void removePaper(int paperId);
 
 private:
     QSqlDatabase db_;

@@ -367,12 +367,12 @@ int DatabaseHelper::updatePaper(const Paper& paper)
     return addPaper(paper);
 }
 
-bool DatabaseHelper::removePaper(const Paper& paper)
+void DatabaseHelper::removePaper(const Paper& paper)
 {
-    return removePaper(paper.getId());
+    removePaper(paper.getId());
 }
 
-bool DatabaseHelper::removePaper(int paperId)
+void DatabaseHelper::removePaper(int paperId)
 {
     char qBuf[BUFSIZE];
     sprintf(qBuf,
@@ -380,7 +380,7 @@ bool DatabaseHelper::removePaper(int paperId)
             paperId);
 
     QSqlQuery query;
-    return query.exec(qBuf);
+    query.exec(qBuf);
 }
 
 void DatabaseHelper::createTables()
