@@ -98,11 +98,11 @@ void PaperInfoTable::clear()
 
 void PaperInfoTable::chooseFilePath()
 {
+    QString homePath = PreferencesManager::instance().getPaperFolderPath();
     QString filePath = QFileDialog::getOpenFileName(
-                this, tr("Choose Database File"), QDir::homePath());
+                this, tr("Choose Database File"), homePath);
 
     if (!filePath.isEmpty()) {
-        QString homePath = PreferencesManager::instance().getPaperFolderPath();
         path_->setText(relativePath(homePath, filePath));
     }
 }
