@@ -361,10 +361,10 @@ int DatabaseHelper::addTag(const string& tag)
     return query.lastInsertId().toInt();
 }
 
-void DatabaseHelper::updatePaper(const Paper& paper)
+int DatabaseHelper::updatePaper(const Paper& paper)
 {
     removePaper(paper.getId());
-    addPaper(paper);
+    return addPaper(paper);
 }
 
 bool DatabaseHelper::removePaper(const Paper& paper)

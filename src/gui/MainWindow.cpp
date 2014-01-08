@@ -125,7 +125,13 @@ void MainWindow::paperSelectedOnly(int index)
 void MainWindow::savePaperInfo()
 {
     paperInfoTable_->saveChanges();
-    databaseHelper_.updatePaper(paperInfoTable_->getPaper());
+
+    Paper paper = paperInfoTable_->getPaper();
+    int paperId = databaseHelper_.updatePaper(paper);
+    if (paper.getId() <= 0) {
+        paper.setId(paperId);
+        paperInfoTable_->setPaper(paper);
+    }
 
     refreshAllPanels();
 }
