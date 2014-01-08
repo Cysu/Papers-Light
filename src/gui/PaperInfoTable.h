@@ -17,7 +17,11 @@ public:
     const Paper& getPaper() const;
     void setPaper(const Paper& paper);
 
-    void saveChanges();
+    void clear();
+
+signals:
+    void paperSaved();
+    void paperRemoved(Paper paper);
 
 private:
     QLineEdit* year_;
@@ -32,6 +36,8 @@ private:
 
 private slots:
     void chooseFilePath();
+    void savePaper();
+    void removePaper();
 
 private:
     void createPanels();

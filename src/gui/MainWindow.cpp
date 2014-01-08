@@ -122,16 +122,21 @@ void MainWindow::paperSelectedOnly(int index)
     paperInfoTable_->setPaper(papers_[index]);
 }
 
-void MainWindow::savePaperInfo()
+void MainWindow::savePaper()
 {
-    paperInfoTable_->saveChanges();
-
     Paper paper = paperInfoTable_->getPaper();
     int paperId = databaseHelper_.updatePaper(paper);
     if (paper.getId() <= 0) {
         paper.setId(paperId);
         paperInfoTable_->setPaper(paper);
     }
+
+    refreshAllPanels();
+}
+
+void MainWindow::removePaper(Paper paper)
+{
+    databaseHelper_.removePaper(paper);
 
     refreshAllPanels();
 }
@@ -167,14 +172,13 @@ void MainWindow::createPanels()
     paperList_ = new PaperList;
     paperInfoTable_ = new PaperInfoTable;
 
-    QPushButton* paperInfoSaveButton = new QPushButton(tr("Save"));
-
     connect(yearList_, &CategoryList::itemSelectedOnly, this, &MainWindow::yearSelectedOnly);
     connect(bookTitleList_, &CategoryList::itemSelectedOnly, this, &MainWindow::bookTitleSelectedOnly);
     connect(authorList_, &CategoryList::itemSelectedOnly, this, &MainWindow::authorSelectedOnly);
     connect(tagList_, &CategoryList::itemSelectedOnly, this, &MainWindow::tagSelectedOnly);
     connect(paperList_, &PaperList::itemSelectedOnly, this, &MainWindow::paperSelectedOnly);
-    connect(paperInfoSaveButton, &QPushButton::clicked, this, &MainWindow::savePaperInfo);
+    connect(paperInfoTable_, &PaperInfoTable::paperSaved, this, &MainWindow::savePaper);
+    connect(paperInfoTable_, &PaperInfoTable::paperRemoved, this, &MainWindow::removePaper);
 
     QVBoxLayout* leftPanelLayout = new QVBoxLayout;
     leftPanelLayout->addWidget(yearList_);
@@ -188,7 +192,6 @@ void MainWindow::createPanels()
 
     QVBoxLayout* rightPanelLayout = new QVBoxLayout;
     rightPanelLayout->addWidget(paperInfoTable_);
-    rightPanelLayout->addWidget(paperInfoSaveButton);
 
     QHBoxLayout* frameLayout = new QHBoxLayout;
     frameLayout->addLayout(leftPanelLayout);

@@ -2,6 +2,7 @@
 #include "utils/PreferencesManager.h"
 #include <QLabel>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QGridLayout>
 
@@ -54,7 +55,8 @@ PaperInfoTable::PaperInfoTable(QWidget* parent)
       authors_(nullptr),
       tags_(nullptr),
       path_(nullptr),
-      comment_(nullptr)
+      comment_(nullptr),
+      paper_()
 {
     createPanels();
 }
@@ -81,15 +83,16 @@ void PaperInfoTable::setPaper(const Paper& paper)
     comment_->setText(paper.getComment().c_str());
 }
 
-void PaperInfoTable::saveChanges()
+void PaperInfoTable::clear()
 {
-    paper_.setYear(year_->text().toInt());
-    paper_.setBookTitle(bookTitle_->text().toStdString());
-    paper_.setTitle(title_->text().toStdString());
-    paper_.setAuthors(QString2list(authors_->text()));
-    paper_.setTags(QString2list(tags_->text()));
-    paper_.setPath(path_->text().toStdString());
-    paper_.setComment(comment_->toPlainText().toStdString());
+    paper_ = Paper();
+    year_->clear();
+    bookTitle_->clear();
+    title_->clear();
+    authors_->clear();
+    tags_->clear();
+    path_->clear();
+    comment_->clear();
 }
 
 void PaperInfoTable::chooseFilePath()
@@ -100,6 +103,34 @@ void PaperInfoTable::chooseFilePath()
     if (!filePath.isEmpty()) {
         QString homePath = PreferencesManager::instance().getPaperFolderPath();
         path_->setText(relativePath(homePath, filePath));
+    }
+}
+
+void PaperInfoTable::savePaper()
+{
+    if (paper_.isNull()) return;
+
+    paper_.setYear(year_->text().toInt());
+    paper_.setBookTitle(bookTitle_->text().toStdString());
+    paper_.setTitle(title_->text().toStdString());
+    paper_.setAuthors(QString2list(authors_->text()));
+    paper_.setTags(QString2list(tags_->text()));
+    paper_.setPath(path_->text().toStdString());
+    paper_.setComment(comment_->toPlainText().toStdString());
+
+    emit paperSaved();
+}
+
+void PaperInfoTable::removePaper()
+{
+    if (paper_.isNull()) return;
+
+    QMessageBox::StandardButton reply = QMessageBox::question(
+                this, tr("Remove Paper"), tr("Confirm to remove the paper?"));
+
+    if (reply == QMessageBox::Yes) {
+        emit paperRemoved(paper_);
+        clear();
     }
 }
 
@@ -120,6 +151,11 @@ void PaperInfoTable::createPanels()
     QPushButton* pathButton = new QPushButton(folderOpenIcon, tr(""));
     connect(pathButton, &QPushButton::clicked, this, &PaperInfoTable::chooseFilePath);
 
+    QPushButton* saveButton = new QPushButton(tr("Save"));
+    QPushButton* removeButton = new QPushButton(tr("Remove"));
+    connect(saveButton, &QPushButton::clicked, this, &PaperInfoTable::savePaper);
+    connect(removeButton, &QPushButton::clicked, this, &PaperInfoTable::removePaper);
+
     QGridLayout* layout = new QGridLayout;
     layout->addWidget(new QLabel(tr("Year")), 0, 0);
     layout->addWidget(year_, 0, 1, 1, 1);
@@ -136,6 +172,8 @@ void PaperInfoTable::createPanels()
     layout->addWidget(path_, 4, 2, 1, 3);
     layout->addWidget(pathButton, 4, 5);
     layout->addWidget(comment_, 5, 0, 1, 6);
+    layout->addWidget(saveButton, 6, 0, 1, 3);
+    layout->addWidget(removeButton, 6, 3, 1, 3);
 
     setLayout(layout);
 }

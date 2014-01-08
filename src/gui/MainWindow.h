@@ -51,7 +51,8 @@ private slots:
     void tagSelectedOnly(int index);
     void paperSelectedOnly(int index);
 
-    void savePaperInfo();
+    void savePaper();
+    void removePaper(Paper paper);
 
 private:
     void setCodecs(const char* codec = "UTF-8");
