@@ -374,10 +374,81 @@ void DatabaseHelper::removePaper(const Paper& paper)
 
 void DatabaseHelper::removePaper(int paperId)
 {
+    // Remove the paper from database
     char qBuf[BUFSIZE];
     sprintf(qBuf,
             "DELETE FROM pl_paper WHERE paper_id = %d",
             paperId);
+
+    QSqlQuery query;
+    query.exec(qBuf);
+
+    // Remove empty book titles
+    query.exec("SELECT book_title_id FROM pl_book_title WHERE book_title_id NOT IN "
+               "(SELECT DISTINCT book_title_id FROM pl_paper)");
+
+    while(query.next()) {
+        int bookTitleId = query.value(0).toInt();
+        removeBookTitle(bookTitleId);
+    }
+
+    // Remove empty authors
+    query.exec("SELECT author_id FROM pl_author WHERE author_id NOT IN "
+               "(SELECT DISTINCT author_id FROM pl_paper2author)");
+
+    while (query.next()) {
+        int authorId = query.value(0).toInt();
+        removeAuthor(authorId);
+    }
+
+    // Remove empty tags
+    query.exec("SELECT tag_id FROM pl_tag WHERE tag_id NOT IN "
+               "(SELECT DISTINCT tag_id FROM pl_paper2tag)");
+
+    while (query.next()) {
+        int tagId = query.value(0).toInt();
+        removeTag(tagId);
+    }
+}
+
+void DatabaseHelper::removeBookTitle(int bookTitleId)
+{
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "DELETE FROM pl_book_title WHERE book_title_id = %d",
+            bookTitleId);
+
+    QSqlQuery query;
+    query.exec(qBuf);
+
+    sprintf(qBuf,
+            "SELECT paper_id FROM pl_paper WHERE book_title_id = %d",
+            bookTitleId);
+
+    query.exec(qBuf);
+    while (query.next()) {
+        int paperId = query.value(0).toInt();
+        removePaper(paperId);
+    }
+}
+
+void DatabaseHelper::removeAuthor(int authorId)
+{
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "DELETE FROM pl_author WHERE author_id = %d",
+            authorId);
+
+    QSqlQuery query;
+    query.exec(qBuf);
+}
+
+void DatabaseHelper::removeTag(int tagId)
+{
+    char qBuf[BUFSIZE];
+    sprintf(qBuf,
+            "DELETE FROM pl_tag WHERE tag_id = %d",
+            tagId);
 
     QSqlQuery query;
     query.exec(qBuf);

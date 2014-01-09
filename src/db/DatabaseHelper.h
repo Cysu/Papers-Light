@@ -50,6 +50,9 @@ public:
 
     void removePaper(const Paper& paper);
     void removePaper(int paperId);
+    void removeBookTitle(int bookTitleId);
+    void removeAuthor(int authorId);
+    void removeTag(int tagId);
 
 private:
     QSqlDatabase db_;
