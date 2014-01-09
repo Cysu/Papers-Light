@@ -9,27 +9,6 @@
 using std::string;
 using std::vector;
 
-static QString list2QString(const vector<string>& list)
-{
-    QString ret;
-    for (vector<string>::size_type i = 0; i < list.size(); ++i) {
-        ret += list[i].c_str();
-        if (i != list.size()-1) ret += ",";
-    }
-    return ret;
-}
-
-static vector<string> QString2list(const QString& qstring)
-{
-    if (qstring.isEmpty()) return vector<string>();
-    QStringList qstringlist = qstring.split(",");
-    vector<string> ret(qstringlist.size());
-    for (vector<string>::size_type i = 0; i < ret.size(); ++i) {
-        ret[i] = qstringlist[i].toStdString();
-    }
-    return ret;
-}
-
 static QString relativePath(const QString& homePath, const QString& filePath)
 {
     QStringList homePathFolders = QDir::fromNativeSeparators(homePath).split("/");
@@ -78,8 +57,8 @@ void PaperInfoTable::setPaper(const Paper& paper)
     year_->setText(QString::number(paper.getYear()));
     bookTitle_->setText(paper.getBookTitle().c_str());
     title_->setText(paper.getTitle().c_str());
-    authors_->setText(list2QString(paper.getAuthors()));
-    tags_->setText(list2QString(paper.getTags()));
+    authors_->setBubbles(paper.getAuthors());
+    tags_->setBubbles(paper.getTags());
     path_->setText(paper.getPath().c_str());
     comment_->setText(paper.getComment().c_str());
 }
@@ -114,8 +93,8 @@ void PaperInfoTable::savePaper()
     paper_.setYear(year_->text().toInt());
     paper_.setBookTitle(bookTitle_->text().toStdString());
     paper_.setTitle(title_->text().toStdString());
-    paper_.setAuthors(QString2list(authors_->text()));
-    paper_.setTags(QString2list(tags_->text()));
+    paper_.setAuthors(authors_->getBubbles());
+    paper_.setTags(tags_->getBubbles());
     paper_.setPath(path_->text().toStdString());
     paper_.setComment(comment_->toPlainText().toStdString());
 
@@ -140,8 +119,8 @@ void PaperInfoTable::createPanels()
     year_ = new QLineEdit;
     bookTitle_ = new QLineEdit;
     title_ = new QLineEdit;
-    authors_ = new QLineEdit;
-    tags_ = new QLineEdit;
+    authors_ = new BubblesEdit;
+    tags_ = new BubblesEdit;
     path_ = new QLineEdit;
     comment_ = new QTextEdit;
 

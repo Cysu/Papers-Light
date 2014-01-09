@@ -22,7 +22,8 @@ SOURCES += \
     utils/utils.cpp \
     db/SearchHelper.cpp \
     gui/PreferencesDialog.cpp \
-    utils/PreferencesManager.cpp
+    utils/PreferencesManager.cpp \
+    gui/BubblesEdit.cpp
 
 HEADERS += \
     gui/MainWindow.h \
@@ -37,7 +38,8 @@ HEADERS += \
     utils/utils.h \
     db/SearchHelper.h \
     gui/PreferencesDialog.h \
-    utils/PreferencesManager.h
+    utils/PreferencesManager.h \
+    gui/BubblesEdit.h
 
 RESOURCES += \
     resources.qrc

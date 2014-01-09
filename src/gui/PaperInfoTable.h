@@ -2,6 +2,7 @@
 #define PAPERINFOTABLE_H
 
 #include "common/Paper.h"
+#include "gui/BubblesEdit.h"
 #include <QWidget>
 #include <QLineEdit>
 #include <QTextEdit>
@@ -27,8 +28,8 @@ private:
     QLineEdit* year_;
     QLineEdit* bookTitle_;
     QLineEdit* title_;
-    QLineEdit* authors_;
-    QLineEdit* tags_;
+    BubblesEdit* authors_;
+    BubblesEdit* tags_;
     QLineEdit* path_;
     QTextEdit* comment_;
 
