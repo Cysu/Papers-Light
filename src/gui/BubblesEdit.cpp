@@ -1,5 +1,5 @@
 #include "gui/BubblesEdit.h"
-#include <QHBoxLayout>
+#include "gui/FlowLayout.h"
 
 using std::string;
 using std::vector;
@@ -7,7 +7,7 @@ using std::vector;
 BubblesEdit::BubblesEdit(QWidget* parent)
     : QWidget(parent),
       bubbles_(),
-      newBubble_(new QLineEdit(tr("+")))
+      newBubble_(nullptr)
 {
     createPanels();
 }
@@ -49,7 +49,9 @@ void BubblesEdit::clear()
 
 void BubblesEdit::createPanels()
 {
-    QHBoxLayout* layout = new QHBoxLayout;
+    newBubble_ = new QPushButton("+");
+
+    FlowLayout* layout = new FlowLayout;
     layout->addWidget(newBubble_);
 
     setLayout(layout);

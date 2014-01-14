@@ -5,6 +5,7 @@
 #include <vector>
 #include <QWidget>
 #include <QLineEdit>
+#include <QPushButton>
 
 class BubblesEdit : public QWidget
 {
@@ -22,7 +23,7 @@ public slots:
 
 private:
     std::vector<QLineEdit*> bubbles_;
-    QLineEdit* newBubble_;
+    QPushButton* newBubble_;
 
 private:
     void createPanels();
