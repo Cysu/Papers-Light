@@ -155,5 +155,7 @@ void PaperInfoTable::createPanels()
     layout->addWidget(saveButton, 6, 0, 1, 3);
     layout->addWidget(removeButton, 6, 3, 1, 3);
 
+    layout->setColumnStretch(3, 1);
+
     setLayout(layout);
 }

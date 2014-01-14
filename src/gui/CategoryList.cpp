@@ -57,4 +57,5 @@ void CategoryList::createPanels()
     layout->addWidget(view_);
 
     setLayout(layout);
+    setFixedWidth(300);
 }
