@@ -58,7 +58,7 @@ void MainWindow::newPaper()
     paper.setTitle("Untitled");
 
     papers_.push_back(paper);
-    paperList_->addItem(paper.getTitle().c_str());
+    paperList_->addItem(paper);
 
     paperInfoTable_->setPaper(paper);
 }
@@ -189,8 +189,8 @@ void MainWindow::createPanels()
     QVBoxLayout* middlePanelLayout = new QVBoxLayout;
     middlePanelLayout->addWidget(searchBar_);
     middlePanelLayout->addWidget(paperList_);
-    searchBar_->setFixedWidth(500);
-    paperList_->setFixedWidth(500);
+    searchBar_->setMaximumWidth(500);
+    paperList_->setMaximumWidth(500);
 
     QVBoxLayout* rightPanelLayout = new QVBoxLayout;
     rightPanelLayout->addWidget(paperInfoTable_);
@@ -244,5 +244,5 @@ void MainWindow::refreshPaperList()
     }
 
     paperList_->clear();
-    paperList_->addItems(papers2QStringList(papers_));
+    paperList_->addItems(papers_);
 }
