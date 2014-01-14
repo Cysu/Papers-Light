@@ -7,6 +7,19 @@
 #include <QLineEdit>
 #include <QPushButton>
 
+class Bubble : public QLineEdit
+{
+    Q_OBJECT
+
+public:
+    explicit Bubble(QWidget* parent = 0);
+    explicit Bubble(const QString& text, QWidget* parent = 0);
+    ~Bubble();
+
+private:
+    void init();
+};
+
 class BubblesEdit : public QWidget
 {
     Q_OBJECT
@@ -22,8 +35,12 @@ public slots:
     void clear();
 
 private:
-    std::vector<QLineEdit*> bubbles_;
+    std::vector<Bubble*> bubbles_;
     QPushButton* newBubble_;
+
+private slots:
+    void addNewBubble();
+    void removeEmptyBubbles();
 
 private:
     void createPanels();

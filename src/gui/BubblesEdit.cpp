@@ -4,6 +4,35 @@
 using std::string;
 using std::vector;
 
+Bubble::Bubble(QWidget* parent)
+    : QLineEdit(parent)
+{
+    init();
+}
+
+Bubble::Bubble(const QString& text, QWidget* parent)
+    : QLineEdit(text, parent)
+{
+    init();
+}
+
+Bubble::~Bubble()
+{
+
+}
+
+void Bubble::init()
+{
+    setStyleSheet("QLineEdit {"
+                  "  border: 1px solid #AAAAAA;"
+                  "  border-radius: 5px;"
+                  "  font-size: 11pt;"
+                  "}");
+}
+
+
+
+
 BubblesEdit::BubblesEdit(QWidget* parent)
     : QWidget(parent),
       bubbles_(),
@@ -20,7 +49,7 @@ BubblesEdit::~BubblesEdit()
 vector<string> BubblesEdit::getBubbles() const
 {
     vector<string> bubbles(bubbles_.size());
-    for (vector<QLineEdit*>::size_type i = 0; i < bubbles_.size(); ++i) {
+    for (vector<Bubble*>::size_type i = 0; i < bubbles_.size(); ++i) {
         bubbles[i] = bubbles_[i]->text().toStdString();
     }
     return bubbles;
@@ -32,19 +61,15 @@ void BubblesEdit::setBubbles(const vector<string>& contents)
 
     bubbles_.resize(contents.size(), nullptr);
     for (vector<string>::size_type i = 0; i < contents.size(); ++i) {
-        bubbles_[i] = new QLineEdit(contents[i].c_str());
-        bubbles_[i]->setStyleSheet("QLineEdit {"
-                                   "  border: 1px solid #AAAAAA;"
-                                   "  border-radius: 5px;"
-                                   "  font-size: 11pt;"
-                                   "}");
+        bubbles_[i] = new Bubble(contents[i].c_str());
+        connect(bubbles_[i], &Bubble::editingFinished, this, &BubblesEdit::removeEmptyBubbles);
         layout()->addWidget(bubbles_[i]);
     }
 }
 
 void BubblesEdit::clear()
 {
-    for (vector<QLineEdit*>::size_type i = 0; i < bubbles_.size(); ++i) {
+    for (vector<Bubble*>::size_type i = 0; i < bubbles_.size(); ++i) {
         layout()->removeWidget(bubbles_[i]);
         delete bubbles_[i];
         bubbles_[i] = nullptr;
@@ -52,9 +77,28 @@ void BubblesEdit::clear()
     bubbles_.clear();
 }
 
+void BubblesEdit::addNewBubble()
+{
+    Bubble* bubble = new Bubble;
+    bubbles_.push_back(bubble);
+    connect(bubble, &Bubble::editingFinished, this, &BubblesEdit::removeEmptyBubbles);
+    layout()->addWidget(bubbles_.back());
+}
+
+void BubblesEdit::removeEmptyBubbles()
+{
+    for (vector<Bubble*>::iterator it = bubbles_.begin(); it != bubbles_.end(); ) {
+        if ((*it)->text().isEmpty()) {
+            delete *it;
+            it = bubbles_.erase(it);
+        } else ++it;
+    }
+}
+
 void BubblesEdit::createPanels()
 {
     newBubble_ = new QPushButton("+");
+    connect(newBubble_, &QPushButton::clicked, this, &BubblesEdit::addNewBubble);
 
     QFont font = newBubble_->font();
     font.setBold(true);
@@ -62,14 +106,6 @@ void BubblesEdit::createPanels()
 
     newBubble_->setMaximumHeight(24);
     newBubble_->setMaximumWidth(24);
-//    newBubble_->setStyleSheet("QPushButton {"
-//                              "  border: 1px solid #39CCCC;"
-//                              "  border-radius: 4px;"
-//                              "  background-color: #7FDBFF;"
-//                              "  font-weight: bold;"
-//                              "  color: #0074D9;"
-//                              "  width: 20px; height: 20px;"
-//                              "}");
 
     FlowLayout* layout = new FlowLayout;
     layout->addWidget(newBubble_);
