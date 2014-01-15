@@ -216,16 +216,16 @@ void MainWindow::refreshAllPanels()
     tagStats_ = databaseHelper_.getTagStats();
 
     yearList_->clear();
-    yearList_->addItems(stats2QStringList(yearStats_));
+    yearList_->addItems(yearStats_);
 
     bookTitleList_->clear();
-    bookTitleList_->addItems(stats2QStringList(bookTitleStats_));
+    bookTitleList_->addItems(bookTitleStats_);
 
     authorList_->clear();
-    authorList_->addItems(stats2QStringList(authorStats_));
+    authorList_->addItems(authorStats_);
 
     tagList_->clear();
-    tagList_->addItems(stats2QStringList(tagStats_));
+    tagList_->addItems(tagStats_);
 
     searchHelper_.clear();
 

@@ -18,8 +18,7 @@ public:
         TitleRole = Qt::UserRole,
         YearRole,
         BookTitleRole,
-        AuthorRole,
-        NumberRoles
+        AuthorRole
     };
 
 public:
@@ -31,9 +30,6 @@ public:
                const QModelIndex& index) const;
 
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
-
-private:
-
 };
 
 class PaperList : public QWidget

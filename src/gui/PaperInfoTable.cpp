@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QHBoxLayout>
 #include <QGridLayout>
 
 using std::string;
@@ -135,6 +136,9 @@ void PaperInfoTable::createPanels()
     QPushButton* removeButton = new QPushButton(tr("Remove"));
     connect(saveButton, &QPushButton::clicked, this, &PaperInfoTable::savePaper);
     connect(removeButton, &QPushButton::clicked, this, &PaperInfoTable::removePaper);
+    QHBoxLayout* buttonsLayout = new QHBoxLayout;
+    buttonsLayout->addWidget(saveButton);
+    buttonsLayout->addWidget(removeButton);
 
     QGridLayout* layout = new QGridLayout;
     layout->addWidget(new QLabel(tr("Year")), 0, 0);
@@ -152,8 +156,7 @@ void PaperInfoTable::createPanels()
     layout->addWidget(path_, 4, 2, 1, 3);
     layout->addWidget(pathButton, 4, 5);
     layout->addWidget(comment_, 5, 0, 1, 6);
-    layout->addWidget(saveButton, 6, 0, 1, 3);
-    layout->addWidget(removeButton, 6, 3, 1, 3);
+    layout->addLayout(buttonsLayout, 6, 0, 1, 6);
 
     layout->setColumnStretch(3, 1);
 

@@ -57,7 +57,7 @@ void PaperListDelegate::paint(QPainter* painter,
     QStringList authors = index.data(AuthorRole).toStringList();
 
     QRect titleRect = option.rect;
-    titleRect.setTopLeft(titleRect.topLeft() + QPoint(3, 3));
+    titleRect.setTopLeft(titleRect.topLeft() + QPoint(8, 5));
     titleRect.setHeight(20);
 
     QRect yearBookTitleRect = QRect(titleRect.bottomLeft() + QPoint(0, 5),

@@ -1,10 +1,33 @@
 #ifndef CATEGORYLIST_H
 #define CATEGORYLIST_H
 
+#include "common/CategoryStats.h"
+#include <vector>
 #include <QWidget>
 #include <QLabel>
 #include <QListView>
 #include <QStandardItemModel>
+#include <QStyledItemDelegate>
+
+class CategoryListDelegate : public QStyledItemDelegate
+{
+     Q_OBJECT
+
+public:
+    enum DataRole
+    {
+        NameRole = Qt::UserRole,
+        CountRole
+    };
+
+public:
+    explicit CategoryListDelegate(QWidget* parent = 0);
+    ~CategoryListDelegate();
+
+    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+
+    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
+};
 
 class CategoryList : public QWidget
 {
@@ -19,8 +42,8 @@ public:
      * delegator's responsibility to parse and display the information.
      * The same issue should be concerned in PaperList and PaperInfoTable.
      */
-    void addItem(const QString& content);
-    void addItems(const QStringList& contents);
+    void addItem(const CategoryStats& stats);
+    void addItems(const std::vector<CategoryStats>& statsList);
 
     void clear();
 
@@ -33,6 +56,7 @@ private:
     QLabel* titleLabel_;
     QListView* view_;
     QStandardItemModel* model_;
+    CategoryListDelegate* delegate_;
 
 private slots:
     void itemDoubleClicked(const QModelIndex& index);
