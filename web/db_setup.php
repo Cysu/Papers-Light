@@ -62,7 +62,7 @@ $type2attr = [
 echo <<<'EOD'
 CREATE DATABASE IF NOT EXISTS papers_light DEFAULT CHARSET UTF8 COLLATE UTF8_GENERAL_CI;
 USE papers_light;
-CREATE USER "pl_admin" IDENTIFIED BY "cuhk_mmlab";
+CREATE USER "pl_admin"@"localhost" IDENTIFIED BY "cuhk_mmlab";
 GRANT ALL ON papers_light.* TO "pl_admin";
 CREATE TABLE IF NOT EXISTS pl_tag(
     tag_id INT AUTO_INCREMENT PRIMARY KEY,
