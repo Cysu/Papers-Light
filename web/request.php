@@ -13,7 +13,11 @@ if (isset($_SESSION['pl'])) {
 if (isset($_GET['action'])) header('Content-Type: application/json');
 
 if (isset($_GET['action'])) {
-    if ($_GET['action'] === 'getpapers') {
+    if ($_GET['action'] === 'init') {
+        echo json_encode(['username' => $pl->user]);
+    }
+    
+    else if ($_GET['action'] === 'getpapers') {
         echo json_encode($pl->getPapers());
     }
 }

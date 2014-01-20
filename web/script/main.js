@@ -1,8 +1,25 @@
 var papersLight = papersLight || {};
 
+papersLight.init = function() {
+
+    $.getJSON('request.php?action=init', function(data) {
+        if (data.username === '' || data.username === null) {
+            var content =
+                '<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#pl-login">' +
+                '  Admin' +
+                '</button>';
+
+            $('#pl-toolbar').html(content);
+        } else {
+
+
+        }
+    });
+};
+
 papersLight.showAllPapers = function() {
 
-    $.getJSON('request.php', {action: 'getpapers'}, function(data) {
+    $.getJSON('request.php?action=getpapers', function(data) {
 
         if (data.error) {
             $('#pl-all').html(data.error);
@@ -34,11 +51,12 @@ papersLight.showAllPapers = function() {
                 '  </tbody>' +
                 '</table>';
 
-            $('#pl-all').html(content);
+            $('#pl-papers').html(content);
         }
     });
 };
 
 $(function() {
+    papersLight.init();
     papersLight.showAllPapers();
 });

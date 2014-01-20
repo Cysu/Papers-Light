@@ -4,11 +4,31 @@ require_once('inc/DBConn.class.php');
 require_once('inc/DBError.class.php');
 
 class PapersLight {
+
+    public $user;
+
     private $_type2attr;
-    private $_tables;
 
     public function __construct($type2attr) {
+        $this->user = '';
         $this->_type2attr = $type2attr;
+
+        if (isset($_COOKIE['plname']) && isset($_COOKIE['plpass'])) {
+            $this->adminLogin($_COOKIE['plname'], $_COOKIE['plpass']);
+        }
+    }
+
+    public function adminLogin($username, $password, $remember = true) {
+        if ($username === 'pl_admin' && $password === 'cuhk_mmlab') {
+            if ($remember) {
+                setcookie('plname', 'pl_admin', time() + 90 * 86400, '/');
+                setcookie('plpass', 'cuhk_mmlab', time() + 90 * 86400, '/');
+            }
+            $this->user = $username;
+            $_SESSION['pl'] = serialize($this);
+        } else {
+            return ['error' => 'admin-login-failed'];
+        }
     }
 
     public function getPapers() {
