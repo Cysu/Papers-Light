@@ -3,17 +3,18 @@ var papersLight = papersLight || {};
 papersLight.showAllPapers = function() {
 
     $.getJSON('request.php', {action: 'getpapers'}, function(data) {
+
         if (data.error) {
             $('#pl-all').html(data.error);
         } else {
-            var content = 
-                '<table class="table table-hover">' + 
+            var content =
+                '<table class="table table-hover">' +
                 '  <thead>' +
                 '    <tr>' +
                 '      <th>Year</th>' +
                 '      <th>Title</th>' +
                 '      <th>Authors</th>' +
-                '      <th>BookTitle</th>' +
+                '      <th>Source</th>' +
                 '    </tr>' +
                 '  </thead>' +
                 '  <tbody>';
@@ -25,7 +26,7 @@ papersLight.showAllPapers = function() {
                 '      <td>' + paper['year'] + '</td>' +
                 '      <td>' + paper['title'] + '</td>' +
                 '      <td>' + paper['author'] + '</td>' +
-                '      <td>' + paper['booktitle'] + '</td>' +
+                '      <td>' + paper['source'] + '</td>' +
                 '    </tr>';
             }
 

@@ -10,7 +10,7 @@ if (isset($_SESSION['pl'])) {
     $pl = new PapersLight($type2attr);
 }
 
-if (isset($_GET['action'])) header('Content-Type: application-json');
+if (isset($_GET['action'])) header('Content-Type: application/json');
 
 if (isset($_GET['action'])) {
     if ($_GET['action'] === 'getpapers') {
