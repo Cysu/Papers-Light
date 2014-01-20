@@ -1,5 +1,6 @@
 <?php
 
+require_once('inc/common.php');
 require_once 'inc/PapersLight.class.php';
 
 session_start();

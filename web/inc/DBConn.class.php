@@ -17,4 +17,15 @@ class DBConn {
             throw new DBError('Could not connect to database');
         }
     }
+
+    public function query($qstr, $params = []) {
+        $stmt = $this->_db->prepare($qstr);
+        foreach ($params as $param) {
+            $stmt->bindParam($param[0], $param[1], $param[2]);
+        }
+        if (!$stmt->execute()) {
+            throw new DBError('Could not query the database');
+        }
+        return $stmt->fetchAll();
+    }
 }
