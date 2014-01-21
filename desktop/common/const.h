@@ -1,7 +1,7 @@
 #ifndef CONST_H
 #define CONST_H
 
-const int BUFSIZE = 1024;
+const int BUFSIZE = 65536;
 
 #ifdef Q_OS_WIN
     const char* const PREFERENCE_FILENAME = ".plrc.txt";
