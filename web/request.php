@@ -16,6 +16,14 @@ if (isset($_GET['action'])) {
     if ($_GET['action'] === 'init') {
         echo json_encode(['username' => $pl->user]);
     }
+
+    else if ($_GET['action'] === 'adminlogin' && isset($_POST['username']) && isset($_POST['password'])) {
+        echo json_encode($pl->adminLogin($_POST['username'], $_POST['password']));
+    }
+
+    else if ($_GET['action'] === 'gettypes') {
+        echo json_encode($pl->getTypes());
+    }
     
     else if ($_GET['action'] === 'getpapers') {
         echo json_encode($pl->getPapers());

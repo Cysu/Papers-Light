@@ -2,9 +2,10 @@
 <head>
     <meta charset="utf-8">
     <title>Papers-Light Demo</title>
-    <script src="script/jquery-1.8.1.min.js"></script>
-    <script src="script/bootstrap.min.js"></script>
     <link rel="stylesheet" href="style/bootstrap.css">
+    <link rel="stylesheet" href="style/bootstrap-responsive.css">
+    <link rel="stylesheet" href="style/docs.css">
+    <link rel="stylesheet" href="style/mmlab.css">
 </head>
 <body>
     <div class="container" id="pl-all">
@@ -13,27 +14,57 @@
         <div id="pl-papers"></div>
     </div>
 
-    <div class="modal fade" id="pl-login" tabindex="-1" role="dialog" aria-labelledby="pl-login-title" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="pl-login-title">Administrator Login</h4>
-                </div>
-                <div class="modal-body">
-                    <form role="form">
+    <!-- Login dialog -->
+    <div class="modal hide fade" id="pl-login" tabindex="-1" role="dialog" aria-labelledby="pl-login-modal" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="pl-login-modal">Administrator Login</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="pl-login-username">Username</label>
+                    <div class="controls">
                         <input type="text" id="pl-login-username" placeholder="Username">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="pl-login-password">Password</label>
+                    <div class="controls">
                         <input type="password" id="pl-login-password" placeholder="Password">
-                    </form>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="pl-login-button">Login</button>
-                </div>
-            </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="pl-login-button">Login</button>
         </div>
     </div>
 
+    <!-- Add new paper dialog -->
+    <div class="modal hide fade" id="pl-add-paper" tabindex="-1" role="dialog" aria-labelledby="pl-add-paper-modal" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="pl-add-paper-modal">Add Paper</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal" id="pl-add-paper-form">
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="pl-add-paper-button">Submit</button>
+        </div>
+    </div>
+
+    <script src="script/jquery.js"></script>
+    <script src="script/bootstrap-transition.js"></script>
+    <script src="script/bootstrap-alert.js"></script>
+    <script src="script/bootstrap-scrollspy.js"></script>
+    <script src="script/bootstrap-tab.js"></script>
+    <script src="script/bootstrap-tooltip.js"></script>
+    <script src="script/bootstrap.min.js"></script>
     <script src="script/main.js"></script>
 </body>
 </html>

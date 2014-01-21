@@ -26,9 +26,14 @@ class PapersLight {
             }
             $this->user = $username;
             $_SESSION['pl'] = serialize($this);
+            return ['success' => 'admin-login-success'];
         } else {
             return ['error' => 'admin-login-failed'];
         }
+    }
+
+    public function getTypes() {
+        return $this->_type2attr;
     }
 
     public function getPapers() {
@@ -41,7 +46,7 @@ class PapersLight {
                     array_push($papers, $this->getPaperInfo($paper));
                 }
             }
-            return array_slice($papers, 2, 1);
+            return $papers;
         } catch (DBError $e) {
             return ['error' => 'database-error'];
         }
