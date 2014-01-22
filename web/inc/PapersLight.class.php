@@ -40,10 +40,10 @@ class PapersLight {
         try {
             $db = $this->getDatabase();
             $papers = [];
-            foreach (array_keys($this->_type2attr ) as $type) {
+            foreach (array_keys($this->_type2attr) as $type) {
                 $result = $db->query('SELECT * FROM pl_'.$type);
                 foreach ($result as $paper) {
-                    array_push($papers, $this->getPaperInfo($paper));
+                    array_push($papers, $this->getPaperInfo($type, $paper));
                 }
             }
             return $papers;
@@ -53,6 +53,10 @@ class PapersLight {
     }
 
     public function addPaper($type, $paper) {
+        if ($this->user !== 'pl_admin') {
+            return ['error' => 'No database access permission'];
+        }
+
         try {
             $paper = (array) $paper;
             $columns = array_keys($paper);
@@ -66,8 +70,11 @@ class PapersLight {
 
             $params = [];
             for ($i = 0; $i < count($columns); ++$i) {
-                array_push($params, 
-                    [$values[$i], $paper[$columns[$i]], PDO::PARAM_STR]);;
+                array_push($params, [
+                    $values[$i],
+                    $paper[$columns[$i]],
+                    PDO::PARAM_STR
+                ]);
             }
             
             $db = $this->getDatabase();
@@ -79,7 +86,25 @@ class PapersLight {
         }
     }
 
-    private function getPaperInfo($paper) {
+    public function removePaper($type, $paperId) {
+        if ($this->user !== 'pl_admin') {
+            return ['error' => 'No database access permission'];
+        }
+
+        try {
+            $qstr = 'DELETE FROM pl_'.$type.' WHERE paper_id = :paper_id';
+            $params = [[':paper_id', (int) $paperId, PDO::PARAM_INT]];
+
+            $db = $this->getDatabase();
+            $db->query($qstr, $params);
+
+            return ['success' => 'remove-paper-success'];
+        } catch (DBError $e) {
+            return ['error' => 'database-error'];
+        }
+    }
+
+    private function getPaperInfo($type, $paper) {
         $year = isset($paper['year']) ? $paper['year'] : 'Unknown';
 
         $title = isset($paper['title']) ? $paper['title'] : 'Unknown';
@@ -91,7 +116,14 @@ class PapersLight {
                   isset($paper['journal']) ? $paper['journal'] : (
                   isset($paper['publisher']) ? $paper['publisher']: 'Unknown'));
 
-        return ['year' => $year,'title' => $title, 'author' => $author, 'source' => $source];
+        return [
+            'type' => $type,
+            'id' => $paper['paper_id'],
+            'year' => $year,
+            'title' => $title,
+            'author' => $author,
+            'source' => $source
+        ];
     }
 
     private function getDatabase() {

@@ -53,6 +53,21 @@
                 <button type="button" class="btn btn-primary" id="pl-add-paper-button">Submit</button>
             </div>
         </div>
+
+        <!-- Remove paper dialog -->
+        <div class="modal hide fade" id="pl-remove-paper" tabindex="-1" role="dialog" aria-labelledby="pl-remove-paper-modal" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="pl-remove-paper-modal">Remove Paper</h4>
+            </div>
+            <div class="modal-body">
+                <p id="pl-remove-paper-info"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="pl-remove-paper-button">Remove</button>
+            </div>
+        </div>
     </div>
 
     <script src="script/jquery.js"></script>
