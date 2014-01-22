@@ -28,4 +28,8 @@ if (isset($_GET['action'])) {
     else if ($_GET['action'] === 'getpapers') {
         echo json_encode($pl->getPapers());
     }
+
+    else if ($_GET['action'] === 'addpaper' && isset($_POST['type']) && isset($_POST['paper'])) {
+        echo json_encode($pl->addPaper($_POST['type'], json_decode($_POST['paper'])));
+    }
 }

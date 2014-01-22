@@ -30,7 +30,7 @@ papersLight.adminLogin = function() {
         dataType: 'json',
         success: function(data) {
             if (data.error) {
-                alert('Login failed');
+                alert('Failed to login');
             } else {
                 $('#pl-login').modal('hide');
                 papersLight.createAdminPanel();
@@ -48,6 +48,8 @@ papersLight.createAdminPanel = function() {
     $('#pl-admin-add').click(function() {
         papersLight.addPaper();
     });
+
+    $('#pl-add-paper-button').click(papersLight.addPaperSubmit);
 };
 
 papersLight.showAllPapers = function() {
@@ -121,7 +123,8 @@ papersLight.addPaper = function() {
                         '<div class="control-group">' +
                         '  <label class="control-label" for="pl-add-paper-' + req[i] + '">' + req[i] + ' *</label>' +
                         '  <div class="controls">' +
-                        '    <input type="text" id="pl-add-paper-' + req[i] + '" placeholder="' + req[i] + '">' +
+                        '    <input class="pl-paper-req-fields" type="text" id="pl-add-paper-' + req[i] + '" placeholder="' + req[i] + '">' +
+                        '    <span class="help-inline"></span>' +
                         '  </div>' +
                         '</div>';
                 }
@@ -130,18 +133,68 @@ papersLight.addPaper = function() {
                         '<div class="control-group">' +
                         '  <label class="control-label" for="pl-add-paper-' + opt[i] + '">' + opt[i] + '</label>' +
                         '  <div class="controls">' +
-                        '    <input type="text" id="pl-add-paper-' + opt[i] + '" placeholder="' + opt[i] + '">' +
+                        '    <input class="pl-paper-opt-fields" type="text" id="pl-add-paper-' + opt[i] + '" placeholder="' + opt[i] + '">' +
                         '  </div>' +
                         '</div>';
                 }
                 $('#pl-add-paper-fields').html(content);
+                $('.pl-paper-req-fields').on('input', function() {
+                    if ($(this).val() !== '') {
+                        $(this).parents('.control-group').removeClass('error');
+                        $(this).siblings('span').html('');
+                    }
+                });
             });
             $('#pl-add-paper-type').val('conference');
             $('#pl-add-paper-type').trigger('change');
         }
     });
-
     $('#pl-add-paper').modal('show');
+};
+
+papersLight.addPaperSubmit = function() {
+    var paper = {};
+    var isValid = true;
+    $('.pl-paper-req-fields').each(function() {
+        var key = $(this).attr("id").slice(13);
+        var value = $(this).val();
+
+        if (value === '' || value === null) {
+            $(this).parents('.control-group').addClass('error');
+            $(this).siblings('span').html('Please enter the ' + key);
+            isValid = false;
+        } else {
+            paper[key] = value;
+        }
+    });
+
+    if (!isValid) return;
+    $('.pl-paper-opt-fields').each(function() {
+        var key = $(this).attr("id").slice(13);
+        var value = $(this).val();
+
+        if (value !== '' && value !== null) {
+            paper[key] = value;
+        }
+    })
+
+    $.ajax({
+        url: 'request.php?action=addpaper',
+        type: 'POST',
+        data: {
+            type: $('#pl-add-paper-type').val(),
+            paper: JSON.stringify(paper)
+        },
+        dataType: 'json',
+        success: function(data) {
+            if (data.error) {
+                alert('Failed to add the paper');
+            } else {
+                $('#pl-add-paper').modal('hide');
+                papersLight.showAllPapers();
+            }
+        }
+    });
 };
 
 $(function() {

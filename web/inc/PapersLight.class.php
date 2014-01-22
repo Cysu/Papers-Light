@@ -40,13 +40,40 @@ class PapersLight {
         try {
             $db = $this->getDatabase();
             $papers = [];
-            foreach (array_keys($this->_type2attr )as $type) {
+            foreach (array_keys($this->_type2attr ) as $type) {
                 $result = $db->query('SELECT * FROM pl_'.$type);
                 foreach ($result as $paper) {
                     array_push($papers, $this->getPaperInfo($paper));
                 }
             }
             return $papers;
+        } catch (DBError $e) {
+            return ['error' => 'database-error'];
+        }
+    }
+
+    public function addPaper($type, $paper) {
+        try {
+            $paper = (array) $paper;
+            $columns = array_keys($paper);
+            $values = array_map(function($column) {
+                return ':'.$column;
+            }, $columns);
+
+            $qstr = 'INSERT INTO pl_'.$type;
+            $qstr .= '('.join(',', $columns).')';
+            $qstr .= ' VALUES('.join(',', $values).')';
+
+            $params = [];
+            for ($i = 0; $i < count($columns); ++$i) {
+                array_push($params, 
+                    [$values[$i], $paper[$columns[$i]], PDO::PARAM_STR]);;
+            }
+            
+            $db = $this->getDatabase();
+            $db->query($qstr, $params);
+
+            return ['success' => 'add-paper-success'];
         } catch (DBError $e) {
             return ['error' => 'database-error'];
         }
