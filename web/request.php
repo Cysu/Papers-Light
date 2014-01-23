@@ -24,7 +24,7 @@ if (isset($_GET['action'])) {
     else if ($_GET['action'] === 'gettypes') {
         echo json_encode($pl->getTypes());
     }
-    
+
     else if ($_GET['action'] === 'getpapers') {
         echo json_encode($pl->getPapers());
     }

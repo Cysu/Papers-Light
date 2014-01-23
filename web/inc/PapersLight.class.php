@@ -77,7 +77,7 @@ class PapersLight {
                     PDO::PARAM_STR
                 ]);
             }
-            
+
             $db = $this->getDatabase();
             $db->query($qstr, $params);
 
