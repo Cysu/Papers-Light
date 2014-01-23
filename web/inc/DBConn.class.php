@@ -26,6 +26,6 @@ class DBConn {
         if (!$stmt->execute()) {
             throw new DBError('Could not query the database');
         }
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

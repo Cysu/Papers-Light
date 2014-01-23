@@ -43,7 +43,8 @@ class PapersLight {
             foreach (array_keys($this->_type2attr) as $type) {
                 $result = $db->query('SELECT * FROM pl_'.$type);
                 foreach ($result as $paper) {
-                    array_push($papers, $this->getPaperInfo($type, $paper));
+                    $paper['type'] = $type;
+                    array_push($papers, $paper);
                 }
             }
             return $papers;
@@ -102,28 +103,6 @@ class PapersLight {
         } catch (DBError $e) {
             return ['error' => 'database-error'];
         }
-    }
-
-    private function getPaperInfo($type, $paper) {
-        $year = isset($paper['year']) ? $paper['year'] : 'Unknown';
-
-        $title = isset($paper['title']) ? $paper['title'] : 'Unknown';
-
-        $author = isset($paper['author']) ? $paper['author'] : (
-                  isset($paper['editor']) ? $paper['editor'] : 'Unknown');
-
-        $source = isset($paper['booktitle']) ? $paper['booktitle'] : (
-                  isset($paper['journal']) ? $paper['journal'] : (
-                  isset($paper['publisher']) ? $paper['publisher']: 'Unknown'));
-
-        return [
-            'type' => $type,
-            'id' => $paper['paper_id'],
-            'year' => $year,
-            'title' => $title,
-            'author' => $author,
-            'source' => $source
-        ];
     }
 
     private function getDatabase() {
