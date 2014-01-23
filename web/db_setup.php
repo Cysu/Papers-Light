@@ -18,7 +18,7 @@ foreach ($type2attr as $type => $attr)
 {
     echo "CREATE TABLE IF NOT EXISTS pl_{$type}(\n";
     echo "    paper_id INT AUTO_INCREMENT PRIMARY KEY,\n";
-    $cols = [];
+    $cols = array();
     foreach ($attr['required'] as $a) {
         array_push($cols, "    {$a} TEXT NOT NULL");
     }

@@ -28,9 +28,9 @@ class PapersLight {
             }
             $this->user = $username;
             $_SESSION['pl'] = serialize($this);
-            return ['success' => 'admin-login-success'];
+            return array('success' => 'admin-login-success');
         } else {
-            return ['error' => 'admin-login-failed'];
+            return array('error' => 'admin-login-failed');
         }
     }
 
@@ -41,7 +41,7 @@ class PapersLight {
     public function getPapers() {
         try {
             $db = $this->getDatabase();
-            $papers = [];
+            $papers = array();
             foreach (array_keys($this->_type2attr) as $type) {
                 $result = $db->query('SELECT * FROM pl_'.$type);
                 foreach ($result as $paper) {
@@ -51,13 +51,13 @@ class PapersLight {
             }
             return $papers;
         } catch (DBError $e) {
-            return ['error' => 'database-error'];
+            return array('error' => 'database-error');
         }
     }
 
     public function addPaper($type, $paper) {
         if ($this->user !== $this->_adminUsername) {
-            return ['error' => 'No database access permission'];
+            return array('error' => 'No database access permission');
         }
 
         try {
@@ -71,27 +71,27 @@ class PapersLight {
             $qstr .= '('.join(',', $columns).')';
             $qstr .= ' VALUES('.join(',', $values).')';
 
-            $params = [];
+            $params = array();
             for ($i = 0; $i < count($columns); ++$i) {
-                array_push($params, [
+                array_push($params, array(
                     $values[$i],
                     $paper[$columns[$i]],
                     PDO::PARAM_STR
-                ]);
+                ));
             }
 
             $db = $this->getDatabase();
             $db->query($qstr, $params);
 
-            return ['success' => 'add-paper-success'];
+            return array('success' => 'add-paper-success');
         } catch (DBError $e) {
-            return ['error' => 'database-error'];
+            return array('error' => 'database-error');
         }
     }
 
     public function updatePaper($origType, $newType, $paperId, $paper) {
         if ($this->user !== $this->_adminUsername) {
-            return ['error' => 'No database access permission'];
+            return array('error' => 'No database access permission');
         }
 
 
@@ -107,20 +107,20 @@ class PapersLight {
                 $qstr .= ' SET '.join(',', $values);
                 $qstr .= ' WHERE paper_id = :paper_id';
 
-                $params = [];
+                $params = array();
                 for ($i = 0; $i < count($columns); ++$i) {
-                    array_push($params, [
+                    array_push($params, array(
                         ':'.$columns[$i],
                         $paper[$columns[$i]],
                         PDO::PARAM_STR
-                    ]);
+                    ));
                 }
-                array_push($params, [':paper_id', (int) $paperId, PDO::PARAM_INT]);
+                array_push($params, array(':paper_id', (int) $paperId, PDO::PARAM_INT));
 
                 $db = $this->getDatabase();
                 $db->query($qstr, $params);
 
-                return ['success' => 'update-paper-success'];
+                return array('success' => 'update-paper-success');
             } else {
                 $result = $this->removePaper($origType, $paperId);
                 if (isset($result['error'])) return $result;
@@ -128,28 +128,28 @@ class PapersLight {
                 $result = $this->addPaper($newType, $paper);
                 if (isset($result['error'])) return $result;
 
-                return ['success' => 'update-paper-success'];
+                return array('success' => 'update-paper-success');
             }
         } catch (DBError $e) {
-            return ['error' => 'database-error'];
+            return array('error' => 'database-error');
         }
     }
 
     public function removePaper($type, $paperId) {
         if ($this->user !== $this->_adminUsername) {
-            return ['error' => 'No database access permission'];
+            return array('error' => 'No database access permission');
         }
 
         try {
             $qstr = 'DELETE FROM pl_'.$type.' WHERE paper_id = :paper_id';
-            $params = [[':paper_id', (int) $paperId, PDO::PARAM_INT]];
+            $params = array(array(':paper_id', (int) $paperId, PDO::PARAM_INT));
 
             $db = $this->getDatabase();
             $db->query($qstr, $params);
 
-            return ['success' => 'remove-paper-success'];
+            return array('success' => 'remove-paper-success');
         } catch (DBError $e) {
-            return ['error' => 'database-error'];
+            return array('error' => 'database-error');
         }
     }
 
