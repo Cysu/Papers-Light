@@ -1,9 +1,11 @@
 var papersLight = papersLight || {};
 
 papersLight.init = function() {
+    papersLight.curEditPaper = {};
+
     // Static dialogs submit buttons
     $('#pl-login-button').click(papersLight.adminLogin);
-    $('#pl-add-paper-button').click(papersLight.addPaperSubmit);
+    $('#pl-edit-paper-button').click(papersLight.editPaperSubmit);
     $('#pl-remove-paper-button').click(papersLight.removePaperSubmit);
 
     // Initialize the page for user or admin
@@ -128,15 +130,21 @@ papersLight.showPapers = function() {
 };
 
 papersLight.addPaper = function() {
+    papersLight.curEditPaper = {
+        paper_id: 0  // zero means it is a new paper
+    };
+
+    $('#pl-edit-paper-modal').html('Add Paper');
+
     $.getJSON('request.php?action=gettypes', function(data) {
         if (data.error) {
-            $('#pl-add-paper-form').html(data.error);
+            $('#pl-edit-paper-form').html(data.error);
         } else {
             var content =
                 '<div class="control-group">' +
-                '  <label class="control-label" for="pl-add-paper-type">Type</label>' +
+                '  <label class="control-label" for="pl-edit-paper-type">Type</label>' +
                 '  <div class="controls">' +
-                '    <select id="pl-add-paper-type">';
+                '    <select id="pl-edit-paper-type">';
 
             for (var type in data) {
                 if (!data.hasOwnProperty(type)) continue;
@@ -147,54 +155,89 @@ papersLight.addPaper = function() {
                 '    </select>' +
                 '  </div>' +
                 '</div>' +
-                '<div id="pl-add-paper-fields">' +
+                '<div id="pl-edit-paper-fields">' +
                 '</div>';
 
-            $('#pl-add-paper-form').html(content);
-            $('#pl-add-paper-type').change(function() {
-                var type = $('#pl-add-paper-type').val();
+            $('#pl-edit-paper-form').html(content);
+
+            $('#pl-edit-paper-type').change(function() {
+                // Load the current editing paper
+                var type = $('#pl-edit-paper-type').val();
                 var req = data[type]['required'];
                 var opt = data[type]['optional'];
                 var content = '';
                 for (var i = 0; i < req.length; ++i) {
+                    var key = req[i];
                     content +=
                         '<div class="control-group">' +
-                        '  <label class="control-label" for="pl-add-paper-' + req[i] + '">' + req[i] + ' *</label>' +
+                        '  <label class="control-label" for="pl-edit-paper-' + key + '">' + key + ' *</label>' +
                         '  <div class="controls">' +
-                        '    <input class="pl-paper-req-fields" type="text" id="pl-add-paper-' + req[i] + '" placeholder="' + req[i] + '">' +
+                        '    <input class="pl-paper-req-fields" type="text" id="pl-edit-paper-' + key + '" placeholder="' + key + '"';
+
+                    if (key in papersLight.curEditPaper) {
+                        content += ' value="' + papersLight.curEditPaper[key] + '"';
+                    }
+
+                    content += '>' +
                         '    <span class="help-inline"></span>' +
                         '  </div>' +
                         '</div>';
                 }
                 for (i = 0; i < opt.length; ++i) {
+                    var key = opt[i];
                     content +=
                         '<div class="control-group">' +
-                        '  <label class="control-label" for="pl-add-paper-' + opt[i] + '">' + opt[i] + '</label>' +
+                        '  <label class="control-label" for="pl-edit-paper-' + key + '">' + key + '</label>' +
                         '  <div class="controls">' +
-                        '    <input class="pl-paper-opt-fields" type="text" id="pl-add-paper-' + opt[i] + '" placeholder="' + opt[i] + '">' +
+                        '    <input class="pl-paper-opt-fields" type="text" id="pl-edit-paper-' + key + '" placeholder="' + key + '"';
+
+                    if (key in papersLight.curEditPaper) {
+                        content += ' value="' + papersLight.curEditPaper[key] + '"';
+                    }
+
+                    content += '>' +
                         '  </div>' +
                         '</div>';
                 }
-                $('#pl-add-paper-fields').html(content);
+                $('#pl-edit-paper-fields').html(content);
+
+                // Save the current editing paper
                 $('.pl-paper-req-fields').on('input', function() {
-                    if ($(this).val() !== '') {
+                    var key = $(this).attr('id').slice(14);
+                    var value = $(this).val();
+
+                    papersLight.curEditPaper[key] = value;
+
+                    if (value !== '') {
                         $(this).parents('.control-group').removeClass('error');
                         $(this).siblings('span').html('');
                     }
                 });
+                $('.pl-paper-opt-fields').on('input', function() {
+                    var key = $(this).attr('id').slice(14);
+                    var value = $(this).val();
+
+                    papersLight.curEditPaper[key] = value;
+                });
             });
-            $('#pl-add-paper-type').val('conference');
-            $('#pl-add-paper-type').trigger('change');
+
+            // Set default type to conference
+            $('#pl-edit-paper-type').val('conference');
+            $('#pl-edit-paper-type').trigger('change');
         }
     });
-    $('#pl-add-paper').modal('show');
+    $('#pl-edit-paper').modal('show');
 };
 
-papersLight.addPaperSubmit = function() {
+papersLight.editPaper = function(ind) {
+
+};
+
+papersLight.editPaperSubmit = function() {
     var paper = {};
     var isValid = true;
     $('.pl-paper-req-fields').each(function() {
-        var key = $(this).attr("id").slice(13);
+        var key = $(this).attr('id').slice(14);
         var value = $(this).val();
 
         if (value === '' || value === null) {
@@ -208,7 +251,7 @@ papersLight.addPaperSubmit = function() {
 
     if (!isValid) return;
     $('.pl-paper-opt-fields').each(function() {
-        var key = $(this).attr("id").slice(13);
+        var key = $(this).attr('id').slice(14);
         var value = $(this).val();
 
         if (value !== '' && value !== null) {
@@ -216,23 +259,28 @@ papersLight.addPaperSubmit = function() {
         }
     })
 
-    $.ajax({
-        url: 'request.php?action=addpaper',
-        type: 'POST',
-        data: {
-            type: $('#pl-add-paper-type').val(),
-            paper: JSON.stringify(paper)
-        },
-        dataType: 'json',
-        success: function(data) {
-            if (data.error) {
-                alert('Failed to add the paper');
-            } else {
-                $('#pl-add-paper').modal('hide');
-                papersLight.showAllPapers();
+    // Judge adding or editing
+    if (papersLight.curEditPaper.paper_id === 0) {
+        $.ajax({
+            url: 'request.php?action=addpaper',
+            type: 'POST',
+            data: {
+                type: $('#pl-edit-paper-type').val(),
+                paper: JSON.stringify(paper)
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.error) {
+                    alert('Failed to add the paper');
+                } else {
+                    $('#pl-edit-paper').modal('hide');
+                    papersLight.showAllPapers();
+                }
             }
-        }
-    });
+        });
+    } else {
+
+    }
 };
 
 papersLight.removePaper = function(ind) {
@@ -261,10 +309,6 @@ papersLight.removePaperSubmit = function() {
             }
         }
     });
-};
-
-papersLight.editPaper = function(ind) {
-
 };
 
 $(function() {
