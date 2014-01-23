@@ -8,6 +8,8 @@ class PapersLight {
     public $user;
 
     private $_type2attr;
+    private $_adminUsername = 'pl_admin';
+    private $_adminPassword = 'cuhk_mmlab';
 
     public function __construct($type2attr) {
         $this->user = '';
@@ -19,10 +21,10 @@ class PapersLight {
     }
 
     public function adminLogin($username, $password, $remember = true) {
-        if ($username === 'pl_admin' && $password === 'cuhk_mmlab') {
+        if ($username === $this->_adminUsername && $password === $this->_adminPassword) {
             if ($remember) {
-                setcookie('plname', 'pl_admin', time() + 90 * 86400, '/');
-                setcookie('plpass', 'cuhk_mmlab', time() + 90 * 86400, '/');
+                setcookie('plname', $this->_adminUsername, time() + 90 * 86400, '/');
+                setcookie('plpass', $this->_adminPassword, time() + 90 * 86400, '/');
             }
             $this->user = $username;
             $_SESSION['pl'] = serialize($this);
@@ -54,7 +56,7 @@ class PapersLight {
     }
 
     public function addPaper($type, $paper) {
-        if ($this->user !== 'pl_admin') {
+        if ($this->user !== $this->_adminUsername) {
             return ['error' => 'No database access permission'];
         }
 
@@ -88,7 +90,7 @@ class PapersLight {
     }
 
     public function updatePaper($origType, $newType, $paperId, $paper) {
-        if ($this->user !== 'pl_admin') {
+        if ($this->user !== $this->_adminUsername) {
             return ['error' => 'No database access permission'];
         }
 
@@ -134,7 +136,7 @@ class PapersLight {
     }
 
     public function removePaper($type, $paperId) {
-        if ($this->user !== 'pl_admin') {
+        if ($this->user !== $this->_adminUsername) {
             return ['error' => 'No database access permission'];
         }
 
@@ -152,6 +154,6 @@ class PapersLight {
     }
 
     private function getDatabase() {
-        return new DBConn('mysql', 'papers_light', 'pl_admin', 'cuhk_mmlab');
+        return new DBConn('mysql', 'papers_light', $this->_adminUsername, $this->_adminPassword);
     }
 }
