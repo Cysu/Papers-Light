@@ -1,36 +1,24 @@
 var papersLight = papersLight || {};
 
-papersLight.init = function(isAdminPage) {
+papersLight.init = function() {
     papersLight.curEditPaper = {};
+    papersLight.sortOpt = {key: 'year', order: 'desc'};
 
-    if (isAdminPage) {
-        // Static dialogs submit buttons
-        $('#pl-login-button').click(papersLight.adminLogin);
-        $('#pl-edit-paper-button').click(papersLight.editPaperSubmit);
-        $('#pl-remove-paper-button').click(papersLight.removePaperSubmit);
-    }
+    // Static dialogs submit buttons
+    $('#pl-login-button').click(papersLight.adminLogin);
+    $('#pl-edit-paper-button').click(papersLight.editPaperSubmit);
+    $('#pl-remove-paper-button').click(papersLight.removePaperSubmit);
 
-    // Initialize the page for user or admin
+    // Check if the cookie has set
     $.getJSON('request.php?action=init', function(data) {
         if (data.username === '' || data.username === null) {
-            papersLight.isAdmin = false;
-            papersLight.sortOpt = {key: 'year', order: 'desc'};
-
-            if (isAdminPage) {
-                $('#pl-login').modal({
-                    backdrop: false,
-                    keyboard: false,
-                    show: true
-                });
-            } else {
-                papersLight.refreshPapers();
-            }
-
+            $('#pl-login').modal({
+                backdrop: false,
+                keyboard: false,
+                show: true
+            });
         } else {
-            papersLight.isAdmin = isAdminPage;
-            papersLight.sortOpt = {key: 'year', order: 'desc'};
-
-            if (isAdminPage) papersLight.createAdminPanel();
+            papersLight.createAdminPanel();
             papersLight.refreshPapers();
         }
     });
@@ -50,8 +38,6 @@ papersLight.adminLogin = function() {
                 alert('Failed to login');
             } else {
                 $('#pl-login').modal('hide');
-
-                papersLight.isAdmin = true;
                 papersLight.createAdminPanel();
                 papersLight.refreshPapers();
             }
@@ -61,7 +47,7 @@ papersLight.adminLogin = function() {
 
 papersLight.createAdminPanel = function() {
     var content =
-        '<button class="btn" type="button" id="pl-admin-add">Add</button>';
+        '<button class="btn btn-primary" type="button" id="pl-admin-add">Add Paper</button>';
 
     $('#pl-toolbar').html(content);
 
@@ -140,14 +126,8 @@ papersLight.display = function() {
         '      </a></th>' +
         '      <th class="pl-paper-header" id="pl-paper-header-source"><a href="#">Source' +
                     ((papersLight.sortOpt.key === 'source') ? sortIcon : '') +
-        '      </a></th>';
-
-    if (papersLight.isAdmin) {
-        content +=
-        '      <th>Admin</th>';
-    }
-
-    content +=
+        '      </a></th>' +
+        '      <th>Admin</th>' +
         '    </tr>' +
         '  </thead>' +
         '  <tbody>';
@@ -159,17 +139,11 @@ papersLight.display = function() {
         '      <td>' + paper['year'] + '</td>' +
         '      <td>' + paper['title'] + '</td>' +
         '      <td>' + paper['author'] + '</td>' +
-        '      <td>' + paper['source'] + '</td>';
-
-        if (papersLight.isAdmin) {
-            content +=
-            '  <td>' +
-            '    <a class="pl-paper-edit" id="pl-paper-edit-' + paper['ind'] + '" href="#"><i class="icon-edit"></i></a>' +
-            '    <a class="pl-paper-remove" id="pl-paper-remove-' + paper['ind'] + '" href="#"><i class="icon-remove"></i></a>' +
-            '  </td>';
-        }
-
-        content +=
+        '      <td>' + paper['source'] + '</td>' +
+        '      <td>' +
+        '        <a class="pl-paper-edit" id="pl-paper-edit-' + paper['ind'] + '" href="#"><i class="icon-edit"></i></a>' +
+        '        <a class="pl-paper-remove" id="pl-paper-remove-' + paper['ind'] + '" href="#"><i class="icon-remove"></i></a>' +
+        '      </td>' +
         '    </tr>';
     }
 
@@ -192,17 +166,15 @@ papersLight.display = function() {
         papersLight.display();
     });
 
-    if (papersLight.isAdmin) {
-        $('.pl-paper-edit').click(function() {
-            var ind = parseInt($(this).attr('id').slice(14), 10);
-            papersLight.editPaper(ind);
-        });
+    $('.pl-paper-edit').click(function() {
+        var ind = parseInt($(this).attr('id').slice(14), 10);
+        papersLight.editPaper(ind);
+    });
 
-        $('.pl-paper-remove').click(function() {
-            var ind = parseInt($(this).attr('id').slice(16), 10);
-            papersLight.removePaper(ind);
-        });
-    }
+    $('.pl-paper-remove').click(function() {
+        var ind = parseInt($(this).attr('id').slice(16), 10);
+        papersLight.removePaper(ind);
+    });
 };
 
 papersLight.refreshPapers = function() {
@@ -439,8 +411,5 @@ papersLight.removePaperSubmit = function() {
 };
 
 $(function() {
-    var isAdminPage = (location.pathname === '/pl/admin.html' ||
-                       location.pathname === '/pl/admin/');
-
-    papersLight.init(isAdminPage);
+    papersLight.init();
 });
