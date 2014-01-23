@@ -7,7 +7,7 @@ session_start();
 if (isset($_SESSION['pl'])) {
     $pl = unserialize($_SESSION['pl']);
 } else {
-    $pl = new PapersLight($type2attr);
+    $pl = new PapersLight($TYPES, $DBNAME, $DBUSER, $DBPASS);
 }
 
 if (isset($_GET['action'])) header('Content-Type: application/json');
@@ -17,12 +17,12 @@ if (isset($_GET['action'])) {
         echo json_encode(['username' => $pl->user]);
     }
 
-    else if ($_GET['action'] === 'adminlogin' && isset($_POST['username']) && isset($_POST['password'])) {
-        echo json_encode($pl->adminLogin($_POST['username'], $_POST['password']));
+    else if ($_GET['action'] === 'gettypes') {
+        echo json_encode($TYPES);
     }
 
-    else if ($_GET['action'] === 'gettypes') {
-        echo json_encode($pl->getTypes());
+    else if ($_GET['action'] === 'adminlogin' && isset($_POST['username']) && isset($_POST['password'])) {
+        echo json_encode($pl->adminLogin($_POST['username'], $_POST['password']));
     }
 
     else if ($_GET['action'] === 'getpapers') {

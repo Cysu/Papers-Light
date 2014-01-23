@@ -2,11 +2,13 @@
 
 require_once('inc/common.php');
 
-echo <<<'EOD'
-CREATE DATABASE IF NOT EXISTS papers_light DEFAULT CHARSET UTF8 COLLATE UTF8_GENERAL_CI;
-USE papers_light;
-CREATE USER "pl_admin"@"localhost" IDENTIFIED BY "cuhk_mmlab";
-GRANT ALL ON papers_light.* TO "pl_admin";
+echo <<<EOD
+CREATE DATABASE IF NOT EXISTS {$DBNAME} DEFAULT CHARSET UTF8 COLLATE UTF8_GENERAL_CI;
+CREATE USER "{$DBUSER}"@"localhost" IDENTIFIED BY "{$DBPASS}";
+GRANT ALL ON {$DBNAME}.* TO "{$DBUSER}";
+
+USE {$DBNAME};
+
 CREATE TABLE IF NOT EXISTS pl_tag(
     tag_id INT AUTO_INCREMENT PRIMARY KEY,
     tag_name VARCHAR(64) NOT NULL
@@ -14,7 +16,7 @@ CREATE TABLE IF NOT EXISTS pl_tag(
 
 EOD;
 
-foreach ($type2attr as $type => $attr) 
+foreach ($TYPES as $type => $attr)
 {
     echo "CREATE TABLE IF NOT EXISTS pl_{$type}(\n";
     echo "    paper_id INT AUTO_INCREMENT PRIMARY KEY,\n";

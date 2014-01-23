@@ -1,5 +1,6 @@
 <?php
 
+
 require_once('inc/DBConn.class.php');
 require_once('inc/DBError.class.php');
 
@@ -7,26 +8,30 @@ class PapersLight {
 
     public $user;
 
-    private $_type2attr;
-    private $_adminUsername = 'pl_admin';
-    private $_adminPassword = 'cuhk_mmlab';
+    private $_types;
+    private $_dbname;
+    private $_dbuser;
+    private $_dbpass;
 
-    public function __construct($type2attr) {
+    public function __construct($types, $dbname, $dbuser, $dbpass) {
         $this->user = '';
-        $this->_type2attr = $type2attr;
+        $this->_types = $types;
+        $this->_dbname = $dbname;
+        $this->_dbuser = $dbuser;
+        $this->_dbpass = $dbpass;
 
-        if (isset($_COOKIE['plname']) && isset($_COOKIE['plpass'])) {
-            $this->adminLogin($_COOKIE['plname'], $_COOKIE['plpass']);
+        if (isset($_COOKIE['pluser']) && isset($_COOKIE['plpass'])) {
+            $this->adminLogin($_COOKIE['pluser'], $_COOKIE['plpass']);
         }
     }
 
     public function adminLogin($username, $password, $remember = true) {
-        if ($username === $this->_adminUsername && $password === $this->_adminPassword) {
+        if ($username === $this->_dbuser && $password === $this->_dbpass) {
             if ($remember) {
-                setcookie('plname', $this->_adminUsername, time() + 90 * 86400, '/');
-                setcookie('plpass', $this->_adminPassword, time() + 90 * 86400, '/');
+                setcookie('pluser', $this->_dbuser, time() + 90 * 86400, '/');
+                setcookie('plpass', $this->_dbpass, time() + 90 * 86400, '/');
             }
-            $this->user = $username;
+            $this->user = $this->_dbuser;
             $_SESSION['pl'] = serialize($this);
             return array('success' => 'admin-login-success');
         } else {
@@ -34,15 +39,11 @@ class PapersLight {
         }
     }
 
-    public function getTypes() {
-        return $this->_type2attr;
-    }
-
     public function getPapers() {
         try {
             $db = $this->getDatabase();
             $papers = array();
-            foreach (array_keys($this->_type2attr) as $type) {
+            foreach (array_keys($this->_types) as $type) {
                 $result = $db->query('SELECT * FROM pl_'.$type);
                 foreach ($result as $paper) {
                     $paper['type'] = $type;
@@ -56,7 +57,7 @@ class PapersLight {
     }
 
     public function addPaper($type, $paper) {
-        if ($this->user !== $this->_adminUsername) {
+        if ($this->user !== $this->_dbuser) {
             return array('error' => 'No database access permission');
         }
 
@@ -90,10 +91,9 @@ class PapersLight {
     }
 
     public function updatePaper($origType, $newType, $paperId, $paper) {
-        if ($this->user !== $this->_adminUsername) {
+        if ($this->user !== $this->_dbuser) {
             return array('error' => 'No database access permission');
         }
-
 
         try {
             if ($origType === $newType) {
@@ -136,7 +136,7 @@ class PapersLight {
     }
 
     public function removePaper($type, $paperId) {
-        if ($this->user !== $this->_adminUsername) {
+        if ($this->user !== $this->_dbuser) {
             return array('error' => 'No database access permission');
         }
 
@@ -154,6 +154,6 @@ class PapersLight {
     }
 
     private function getDatabase() {
-        return new DBConn('mysql', 'papers_light', $this->_adminUsername, $this->_adminPassword);
+        return new DBConn('mysql', $this->_dbname, $this->_dbuser, $this->_dbpass);
     }
 }

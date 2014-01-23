@@ -1,6 +1,10 @@
 <?php
 
-$type2attr = array(
+$DBNAME = 'papers_light';
+$DBUSER = 'pl_admin';
+$DBPASS = 'cuhk_mmlab';
+
+$TYPES = array(
     'article' => array(
         'required' => array('author', 'title', 'journal', 'year'),
         'optional' => array('volume', 'number', 'pages', 'month', 'note')
