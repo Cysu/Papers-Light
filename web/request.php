@@ -33,6 +33,10 @@ if (isset($_GET['action'])) {
         echo json_encode($pl->addPaper($_POST['type'], json_decode($_POST['paper'])));
     }
 
+    else if ($_GET['action'] === 'updatepaper' && isset($_POST['orig_type']) && isset($_POST['new_type']) && isset($_POST['paper_id']) && isset($_POST['paper'])) {
+        echo json_encode($pl->updatePaper($_POST['orig_type'], $_POST['new_type'], $_POST['paper_id'], json_decode($_POST['paper'])));
+    }
+
     else if ($_GET['action'] === 'removepaper' && isset($_POST['type']) && isset($_POST['paper_id'])) {
         echo json_encode($pl->removePaper($_POST['type'], $_POST['paper_id']));
     }

@@ -87,6 +87,52 @@ class PapersLight {
         }
     }
 
+    public function updatePaper($origType, $newType, $paperId, $paper) {
+        if ($this->user !== 'pl_admin') {
+            return ['error' => 'No database access permission'];
+        }
+
+
+        try {
+            if ($origType === $newType) {
+                $paper = (array) $paper;
+                $columns = array_keys($paper);
+                $values = array_map(function($column) {
+                    return $column.' = :'.$column;
+                }, $columns);
+
+                $qstr = 'UPDATE pl_'.$newType;
+                $qstr .= ' SET '.join(',', $values);
+                $qstr .= ' WHERE paper_id = :paper_id';
+
+                $params = [];
+                for ($i = 0; $i < count($columns); ++$i) {
+                    array_push($params, [
+                        ':'.$columns[$i],
+                        $paper[$columns[$i]],
+                        PDO::PARAM_STR
+                    ]);
+                }
+                array_push($params, [':paper_id', (int) $paperId, PDO::PARAM_INT]);
+
+                $db = $this->getDatabase();
+                $db->query($qstr, $params);
+
+                return ['success' => 'update-paper-success'];
+            } else {
+                $result = $this->removePaper($origType, $paperId);
+                if (isset($result['error'])) return $result;
+
+                $result = $this->addPaper($newType, $paper);
+                if (isset($result['error'])) return $result;
+
+                return ['success' => 'update-paper-success'];
+            }
+        } catch (DBError $e) {
+            return ['error' => 'database-error'];
+        }
+    }
+
     public function removePaper($type, $paperId) {
         if ($this->user !== 'pl_admin') {
             return ['error' => 'No database access permission'];
