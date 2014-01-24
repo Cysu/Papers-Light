@@ -18,7 +18,7 @@ class DBConn {
         }
     }
 
-    public function query($qstr, $params = []) {
+    public function query($qstr, $params = array()) {
         $stmt = $this->_db->prepare($qstr);
         foreach ($params as $param) {
             $stmt->bindParam($param[0], $param[1], $param[2]);

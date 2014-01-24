@@ -1,7 +1,7 @@
 <?php
 
 require_once('inc/common.php');
-require_once 'inc/PapersLight.class.php';
+require_once('inc/PapersLight.class.php');
 
 session_start();
 if (isset($_SESSION['pl'])) {
@@ -14,7 +14,7 @@ if (isset($_GET['action'])) header('Content-Type: application/json');
 
 if (isset($_GET['action'])) {
     if ($_GET['action'] === 'init') {
-        echo json_encode(['username' => $pl->user]);
+        echo json_encode(array('username' => $pl->user));
     }
 
     else if ($_GET['action'] === 'gettypes') {
