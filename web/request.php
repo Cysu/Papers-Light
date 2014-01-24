@@ -7,7 +7,7 @@ session_start();
 if (isset($_SESSION['pl'])) {
     $pl = unserialize($_SESSION['pl']);
 } else {
-    $pl = new PapersLight($TYPES, $DBNAME, $DBUSER, $DBPASS);
+    $pl = new PapersLight($TYPES, $DBHOST, $DBNAME, $DBUSER, $DBPASS);
 }
 
 if (isset($_GET['action'])) header('Content-Type: application/json');

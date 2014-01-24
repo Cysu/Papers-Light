@@ -1,5 +1,6 @@
 <?php
 
+$DBHOST = '127.0.0.1';
 $DBNAME = 'papers_light';
 $DBUSER = 'pl_admin';
 $DBPASS = 'cuhk_mmlab';

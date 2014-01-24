@@ -1,6 +1,5 @@
 <?php
 
-
 require_once('inc/DBConn.class.php');
 require_once('inc/DBError.class.php');
 
@@ -9,13 +8,15 @@ class PapersLight {
     public $user;
 
     private $_types;
+    private $_dbhost;
     private $_dbname;
     private $_dbuser;
     private $_dbpass;
 
-    public function __construct($types, $dbname, $dbuser, $dbpass) {
+    public function __construct($types, $dbhost, $dbname, $dbuser, $dbpass) {
         $this->user = '';
         $this->_types = $types;
+        $this->_dbhost = $dbhost;
         $this->_dbname = $dbname;
         $this->_dbuser = $dbuser;
         $this->_dbpass = $dbpass;
@@ -154,6 +155,6 @@ class PapersLight {
     }
 
     private function getDatabase() {
-        return new DBConn('mysql', $this->_dbname, $this->_dbuser, $this->_dbpass);
+        return new DBConn('mysql', $this->_dbname, $this->_dbuser, $this->_dbpass, $this->_dbhost);
     }
 }
