@@ -5,6 +5,12 @@ papersLight.init = function() {
     papersLight.refreshPapers();
 };
 
+papersLight.sourceSimplify = function(source) {
+    r = /.*\((.+)\)/.exec(source);
+    if (r !== null && r.length > 1) return r[1];
+    return source;
+};
+
 papersLight.getDislpayInfo = function(paper) {
     var info = {};
 
@@ -15,9 +21,10 @@ papersLight.getDislpayInfo = function(paper) {
     info['author'] = ('author' in paper) ? paper['author'] : (
                      ('editor' in paper) ? paper['editor'] : 'Unknown');
 
-    info['source'] = ('booktitle' in paper) ? paper['booktitle'] : (
+    info['source'] = papersLight.sourceSimplify(
+                     ('booktitle' in paper) ? paper['booktitle'] : (
                      ('journal' in paper) ? paper['journal'] : (
-                     ('publisher' in paper) ? paper['publisher'] : 'Unknown'));
+                     ('publisher' in paper) ? paper['publisher'] : 'Unknown')));
 
     return info;
 };
@@ -33,9 +40,10 @@ papersLight.sort = function() {
             title: ('title' in paper) ? paper['title'] : 'Unknown',
             author: ('author' in paper) ? paper['author'] : (
                     ('editor' in paper) ? paper['editor'] : 'Unknown'),
-            source: ('booktitle' in paper) ? paper['booktitle'] : (
+            source: papersLight.sourceSimplify(
+                    ('booktitle' in paper) ? paper['booktitle'] : (
                     ('journal' in paper) ? paper['journal'] : (
-                    ('publisher' in paper) ? paper['publisher'] : 'Unknown'))
+                    ('publisher' in paper) ? paper['publisher'] : 'Unknown')))
         });
     }
 
@@ -67,14 +75,14 @@ papersLight.display = function() {
         '      <th class="pl-paper-header" id="pl-paper-header-year"><a href="#">Year' +
                     ((papersLight.sortOpt.key === 'year') ? sortIcon : '') +
         '      </a></th>' +
+        '      <th class="pl-paper-header" id="pl-paper-header-source"><a href="#">Source' +
+                    ((papersLight.sortOpt.key === 'source') ? sortIcon : '') +
+        '      </a></th>' +
         '      <th class="pl-paper-header" id="pl-paper-header-title"><a href="#">Title' +
                     ((papersLight.sortOpt.key === 'title') ? sortIcon : '') +
         '      </a></th>' +
         '      <th class="pl-paper-header" id="pl-paper-header-author"><a href="#">Authors' +
                     ((papersLight.sortOpt.key === 'author') ? sortIcon : '') +
-        '      </a></th>' +
-        '      <th class="pl-paper-header" id="pl-paper-header-source"><a href="#">Source' +
-                    ((papersLight.sortOpt.key === 'source') ? sortIcon : '') +
         '      </a></th>' +
         '    </tr>' +
         '  </thead>' +
@@ -85,9 +93,9 @@ papersLight.display = function() {
         content +=
         '    <tr>' +
         '      <td>' + paper['year'] + '</td>' +
+        '      <td>' + paper['source'] + '</td>' +
         '      <td>' + paper['title'] + '</td>' +
         '      <td>' + paper['author'] + '</td>' +
-        '      <td>' + paper['source'] + '</td>' +
         '    </tr>';
     }
 
