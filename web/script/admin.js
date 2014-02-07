@@ -62,24 +62,6 @@ papersLight.createAdminPanel = function() {
     });
 };
 
-papersLight.getDislpayInfo = function(paper) {
-    var info = {};
-
-    info['year'] = ('year' in paper) ? paper['year'] : 'Unknown';
-
-    info['title'] = ('title' in paper) ? paper['title'] : 'Unknown';
-
-    info['author'] = ('author' in paper) ? paper['author'] : (
-                     ('editor' in paper) ? paper['editor'] : 'Unknown');
-
-    info['source'] = papersLight.sourceSimplify(
-                     ('booktitle' in paper) ? paper['booktitle'] : (
-                     ('journal' in paper) ? paper['journal'] : (
-                     ('publisher' in paper) ? paper['publisher'] : 'Unknown')));
-
-    return info;
-};
-
 papersLight.sort = function() {
     // Parse bibtex for display
     papersLight.rows = [];

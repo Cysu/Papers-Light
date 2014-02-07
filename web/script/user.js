@@ -11,22 +11,31 @@ papersLight.sourceSimplify = function(source) {
     return source;
 };
 
-papersLight.getDislpayInfo = function(paper) {
-    var info = {};
+papersLight.exportBibtex = function(ind) {
+    var paper = papersLight.papers[ind];
 
-    info['year'] = ('year' in paper) ? paper['year'] : 'Unknown';
+    var year = ('year' in paper) ? paper['year'] : 'Unknown';
+    var author = ('author' in paper) ? paper['author'] : (
+                 ('editor' in paper) ? paper['editor'] : 'Unknown');
+    var title = ('title' in paper) ? paper['title'] : 'Unknown';
 
-    info['title'] = ('title' in paper) ? paper['title'] : 'Unknown';
+    if (author.indexOf(' ') !== -1) author = author.substr(0, author.indexOf(' '));
+    if (title.indexOf(' ') !== -1) title = title.substr(0, title.indexOf(' '));
 
-    info['author'] = ('author' in paper) ? paper['author'] : (
-                     ('editor' in paper) ? paper['editor'] : 'Unknown');
+    var itemid = author.toLowerCase() + year + title.toLowerCase();
 
-    info['source'] = papersLight.sourceSimplify(
-                     ('booktitle' in paper) ? paper['booktitle'] : (
-                     ('journal' in paper) ? paper['journal'] : (
-                     ('publisher' in paper) ? paper['publisher'] : 'Unknown')));
+    var bibtex = '@' + paper['type'] + '{' + itemid + '\n';
+    var keys = [];
+    for (var key in paper) {
+        if (paper.hasOwnProperty(key) && paper[key] !== null &&
+                key !== 'type' && key !== 'paper_id') {
+            keys.push('  ' + key + '={' + paper[key] + '}');
+        }
+    }
+    bibtex += keys.join(',\n') + '\n}';
 
-    return info;
+    $('#pl-export-paper .modal-body').html('<pre>' + bibtex + '</pre>');
+    $('#pl-export-paper').modal('show');
 };
 
 papersLight.sort = function() {
@@ -84,6 +93,7 @@ papersLight.display = function() {
         '      <th class="pl-paper-header" id="pl-paper-header-author"><a href="#">Authors' +
                     ((papersLight.sortOpt.key === 'author') ? sortIcon : '') +
         '      </a></th>' +
+        '      <th>Export</th>'
         '    </tr>' +
         '  </thead>' +
         '  <tbody>';
@@ -96,6 +106,11 @@ papersLight.display = function() {
         '      <td>' + paper['source'] + '</td>' +
         '      <td>' + paper['title'] + '</td>' +
         '      <td>' + paper['author'] + '</td>' +
+        '      <td>' + 
+        '        <a class="pl-paper-export-bibtex" id="pl-paper-export-bibtex-' + paper['ind'] + '" href="#" data-toggle="tooltip" title="bibtex">' + 
+        '          <i class="icon-bold"></i>' +
+        '        </a>' +
+        '      </td>' +
         '    </tr>';
     }
 
@@ -116,6 +131,11 @@ papersLight.display = function() {
         }
         papersLight.sort();
         papersLight.display();
+    });
+
+    $('.pl-paper-export-bibtex').click(function() {
+        var ind = parseInt($(this).attr('id').slice(23), 10);
+        papersLight.exportBibtex(ind);
     });
 };
 
