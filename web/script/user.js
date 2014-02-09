@@ -93,7 +93,7 @@ papersLight.display = function() {
         '      <th class="pl-paper-header" id="pl-paper-header-author"><a href="#">Authors' +
                     ((papersLight.sortOpt.key === 'author') ? sortIcon : '') +
         '      </a></th>' +
-        '      <th>Export</th>'
+        '      <th>Export</th>' +
         '    </tr>' +
         '  </thead>' +
         '  <tbody>';
