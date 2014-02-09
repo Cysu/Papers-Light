@@ -107,9 +107,7 @@ papersLight.display = function() {
         '      <td>' + paper['title'] + '</td>' +
         '      <td>' + paper['author'] + '</td>' +
         '      <td>' + 
-        '        <a class="pl-paper-export-bibtex" id="pl-paper-export-bibtex-' + paper['ind'] + '" href="#" data-toggle="tooltip" title="bibtex">' + 
-        '          <i class="icon-bold"></i>' +
-        '        </a>' +
+        '        <a class="pl-paper-export-bibtex" id="pl-paper-export-bibtex-' + paper['ind'] + '" href="#">BibTeX</a>' +
         '      </td>' +
         '    </tr>';
     }
