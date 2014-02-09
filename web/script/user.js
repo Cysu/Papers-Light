@@ -5,6 +5,15 @@ papersLight.init = function() {
     papersLight.refreshPapers();
 };
 
+papersLight.authorSimplify = function(author) {
+    var people = author.split(' and ');
+    for (var i = 0; i < people.length; ++i) {
+        var nameParts = people[i].split(', ').reverse();
+        people[i] = nameParts.join(' ');
+    }
+    return people.join(', ');
+};
+
 papersLight.sourceSimplify = function(source) {
     r = /.*\((.+)\)/.exec(source);
     if (r !== null && r.length > 1) return r[1];
@@ -14,16 +23,23 @@ papersLight.sourceSimplify = function(source) {
 papersLight.exportBibtex = function(ind) {
     var paper = papersLight.papers[ind];
 
+    // Generate BibTeX item id from author, year and title
     var year = ('year' in paper) ? paper['year'] : 'Unknown';
     var author = ('author' in paper) ? paper['author'] : (
                  ('editor' in paper) ? paper['editor'] : 'Unknown');
     var title = ('title' in paper) ? paper['title'] : 'Unknown';
 
-    if (author.indexOf(' ') !== -1) author = author.substr(0, author.indexOf(' '));
+    if (author.indexOf(',') !== -1) {
+        author = author.substr(0, author.indexOf(',')).replace(/\s+/g, '');
+    } else if (author.indexOf(' ') !== -1) {
+        author = author.substr(0, author.indexOf(' '));
+    }
+
     if (title.indexOf(' ') !== -1) title = title.substr(0, title.indexOf(' '));
 
     var itemid = author.toLowerCase() + year + title.toLowerCase();
 
+    // Construct the BibTeX
     var bibtex = '@' + paper['type'] + '{' + itemid + '\n';
     var keys = [];
     for (var key in paper) {
@@ -39,7 +55,7 @@ papersLight.exportBibtex = function(ind) {
 };
 
 papersLight.sort = function() {
-    // Parse bibtex for display
+    // Parse BibTeX for display
     papersLight.rows = [];
     for (var i = 0; i < papersLight.papers.length; ++i) {
         var paper = papersLight.papers[i];
@@ -47,8 +63,9 @@ papersLight.sort = function() {
             ind: i,
             year: ('year' in paper) ? paper['year'] : 'Unknown',
             title: ('title' in paper) ? paper['title'] : 'Unknown',
-            author: ('author' in paper) ? paper['author'] : (
-                    ('editor' in paper) ? paper['editor'] : 'Unknown'),
+            author: papersLight.authorSimplify(
+                    ('author' in paper) ? paper['author'] : (
+                    ('editor' in paper) ? paper['editor'] : 'Unknown')),
             source: papersLight.sourceSimplify(
                     ('booktitle' in paper) ? paper['booktitle'] : (
                     ('journal' in paper) ? paper['journal'] : (
