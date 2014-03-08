@@ -61,7 +61,7 @@ void PaperListDelegate::paint(QPainter* painter,
     titleRect.setHeight(20);
 
     QRect yearBookTitleRect = QRect(titleRect.bottomLeft() + QPoint(0, 5),
-                                    QSize(titleRect.width(), titleRect.height()-5));
+                                    QSize(titleRect.width(), titleRect.height()-3));
 
     QRect authorRect = QRect(yearBookTitleRect.bottomLeft() + QPoint(0, 5),
                              QSize(yearBookTitleRect.width(), yearBookTitleRect.height()));
@@ -84,7 +84,7 @@ void PaperListDelegate::paint(QPainter* painter,
 QSize PaperListDelegate::sizeHint(const QStyleOptionViewItem& option,
                                   const QModelIndex& index) const
 {
-    return QSize(450, 70);
+    return QSize(450, 74);
 }
 
 
