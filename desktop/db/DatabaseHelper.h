@@ -14,6 +14,14 @@
 class DatabaseHelper
 {
 public:
+    enum SortOrder
+    {
+        SortByNone = 0,
+        SortByName,
+        SortByCount
+    };
+
+public:
     DatabaseHelper();
     ~DatabaseHelper();
 
@@ -36,10 +44,10 @@ public:
     std::string getAuthor(int authorId);
     std::string getTag(int tagId);
 
-    std::vector<CategoryStats> getYearStats();
-    std::vector<CategoryStats> getBookTitleStats();
-    std::vector<CategoryStats> getAuthorStats();
-    std::vector<CategoryStats> getTagStats();
+    std::vector<CategoryStats> getYearStats(SortOrder sortOrder = SortByNone);
+    std::vector<CategoryStats> getBookTitleStats(SortOrder sortOrder = SortByNone);
+    std::vector<CategoryStats> getAuthorStats(SortOrder sortOrder = SortByNone);
+    std::vector<CategoryStats> getTagStats(SortOrder sortOrder = SortByNone);
 
     int addPaper(const Paper& paper);
     int addBookTitle(const std::string& bookTitle);

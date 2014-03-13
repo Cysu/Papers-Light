@@ -210,10 +210,10 @@ void MainWindow::createPanels()
 
 void MainWindow::refreshAllPanels()
 {
-    yearStats_ = databaseHelper_.getYearStats();
-    bookTitleStats_ = databaseHelper_.getBookTitleStats();
-    authorStats_ = databaseHelper_.getAuthorStats();
-    tagStats_ = databaseHelper_.getTagStats();
+    yearStats_ = databaseHelper_.getYearStats(DatabaseHelper::SortByName);
+    bookTitleStats_ = databaseHelper_.getBookTitleStats(DatabaseHelper::SortByName);
+    authorStats_ = databaseHelper_.getAuthorStats(DatabaseHelper::SortByName);
+    tagStats_ = databaseHelper_.getTagStats(DatabaseHelper::SortByCount);
 
     yearList_->clear();
     yearList_->addItems(yearStats_);

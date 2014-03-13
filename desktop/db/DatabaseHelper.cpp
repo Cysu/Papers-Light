@@ -1,11 +1,35 @@
 #include "db/DatabaseHelper.h"
 #include "common/const.h"
+#include <algorithm>
 #include <QSqlQuery>
 #include <QVariant>
 
 using std::string;
 using std::vector;
 using std::to_string;
+
+bool sortByNameFunc(const CategoryStats& a, const CategoryStats& b)
+{
+    return a.getName().compare(b.getName()) < 0;
+}
+
+bool sortByCountFunc(const CategoryStats &a, const CategoryStats &b)
+{
+    return (a.getCount() > b.getCount()) ||
+            (a.getCount() == b.getCount() && a.getName().compare(b.getName()) < 0);
+}
+
+static void sortStats(vector<CategoryStats>& stats,
+                      DatabaseHelper::SortOrder order)
+{
+    if (order == DatabaseHelper::SortByNone) return;
+
+    if (order == DatabaseHelper::SortByName) {
+        std::sort(stats.begin(), stats.end(), sortByNameFunc);
+    } else if (order == DatabaseHelper::SortByCount) {
+        std::sort(stats.begin(), stats.end(), sortByCountFunc);
+    }
+}
 
 DatabaseHelper::DatabaseHelper()
     : db_(QSqlDatabase::addDatabase("QSQLITE"))
@@ -126,7 +150,7 @@ string DatabaseHelper::getTag(int tagId)
     return query.value(0).toString().toStdString();
 }
 
-vector<CategoryStats> DatabaseHelper::getYearStats()
+vector<CategoryStats> DatabaseHelper::getYearStats(SortOrder sortOrder)
 {
     QSqlQuery query;
     query.exec("SELECT DISTINCT year FROM pl_paper");
@@ -151,10 +175,12 @@ vector<CategoryStats> DatabaseHelper::getYearStats()
         stats[i].setCount(query.value(0).toInt());
     }
 
+    sortStats(stats, sortOrder);
+
     return stats;
 }
 
-vector<CategoryStats> DatabaseHelper::getBookTitleStats()
+vector<CategoryStats> DatabaseHelper::getBookTitleStats(SortOrder sortOrder)
 {
     QSqlQuery query;
     query.exec("SELECT * FROM pl_book_title");
@@ -182,10 +208,12 @@ vector<CategoryStats> DatabaseHelper::getBookTitleStats()
         stats[i].setCount(query.value(0).toInt());
     }
 
+    sortStats(stats, sortOrder);
+
     return stats;
 }
 
-vector<CategoryStats> DatabaseHelper::getAuthorStats()
+vector<CategoryStats> DatabaseHelper::getAuthorStats(SortOrder sortOrder)
 {
     QSqlQuery query;
     query.exec("SELECT * FROM pl_author");
@@ -213,10 +241,12 @@ vector<CategoryStats> DatabaseHelper::getAuthorStats()
         stats[i].setCount(query.value(0).toInt());
     }
 
+    sortStats(stats, sortOrder);
+
     return stats;
 }
 
-vector<CategoryStats> DatabaseHelper::getTagStats()
+vector<CategoryStats> DatabaseHelper::getTagStats(SortOrder sortOrder)
 {
     QSqlQuery query;
     query.exec("SELECT * FROM pl_tag");
@@ -243,6 +273,8 @@ vector<CategoryStats> DatabaseHelper::getTagStats()
         stats[i].setName(tagsName[i]);
         stats[i].setCount(query.value(0).toInt());
     }
+
+    sortStats(stats, sortOrder);
 
     return stats;
 }
