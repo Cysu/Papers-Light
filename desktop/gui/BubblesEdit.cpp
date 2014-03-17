@@ -1,11 +1,13 @@
 #include "gui/BubblesEdit.h"
 #include "gui/FlowLayout.h"
+#include <QFocusEvent>
 
 using std::string;
 using std::vector;
 
 Bubble::Bubble(QWidget* parent)
-    : QLineEdit(parent)
+    : QLineEdit(parent),
+      isFocus_(true)
 {
     init();
 }
@@ -28,6 +30,23 @@ void Bubble::init()
                   "  border-radius: 5px;"
                   "  font-size: 11pt;"
                   "}");
+}
+
+bool Bubble::isFocus() const
+{
+    return isFocus_;
+}
+
+void Bubble::focusInEvent(QFocusEvent *event)
+{
+    isFocus_ = true;
+    QLineEdit::focusInEvent(event);
+}
+
+void Bubble::focusOutEvent(QFocusEvent *event)
+{
+    isFocus_ = false;
+    QLineEdit::focusOutEvent(event);
 }
 
 
@@ -88,8 +107,8 @@ void BubblesEdit::addNewBubble()
 void BubblesEdit::removeEmptyBubbles()
 {
     for (vector<Bubble*>::iterator it = bubbles_.begin(); it != bubbles_.end(); ) {
-        if ((*it)->text().isEmpty()) {
-            delete *it;
+        if ((*it)->text().isEmpty() && !(*it)->isFocus()) {
+            (*it)->deleteLater();
             it = bubbles_.erase(it);
         } else ++it;
     }

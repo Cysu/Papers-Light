@@ -16,6 +16,15 @@ public:
     explicit Bubble(const QString& text, QWidget* parent = 0);
     ~Bubble();
 
+    bool isFocus() const;
+
+protected:
+    void focusInEvent(QFocusEvent* event);
+    void focusOutEvent(QFocusEvent* event);
+
+private:
+    bool isFocus_;
+
 private:
     void init();
 };
