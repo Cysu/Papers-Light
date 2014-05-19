@@ -29,7 +29,7 @@ string SearchHelper::getSqlQueryString() const
     string authorClause = getAuthorClause();
     string tagClause = getTagClause();
 
-    string header = "SELECT pl_paper.paper_id FROM "
+    string header = "SELECT pl_paper.paper_id, pl_paper.title FROM "
                     "pl_paper";
 
     string whereClause = " WHERE ";
@@ -56,7 +56,7 @@ string SearchHelper::getSqlQueryString() const
     query += bookTitleClause + " AND ";
     query += authorClause + " AND ";
     query += tagClause;
-    query += " ORDER BY pl_paper.paper_id ASC";
+    query += " ORDER BY pl_paper.title ASC";
     return query;
 }
 
