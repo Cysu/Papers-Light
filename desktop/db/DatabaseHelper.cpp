@@ -60,13 +60,10 @@ QSqlQuery DatabaseHelper::exec(const QString& query)
 
 Paper DatabaseHelper::getPaper(int paperId)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "SELECT year, book_title_id, title, path, comment FROM pl_paper WHERE paper_id = %d",
-            paperId);
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("SELECT year, book_title_id, title, path, comment FROM pl_paper WHERE paper_id = :paper_id");
+    query.bindValue(":paper_id", paperId);
+    query.exec();
 
     Paper paper;
     if (!query.last()) return paper;
@@ -78,11 +75,9 @@ Paper DatabaseHelper::getPaper(int paperId)
     paper.setPath(query.value(3).toString().toStdString());
     paper.setComment(query.value(4).toString().toStdString());
 
-    sprintf(qBuf,
-            "SELECT author_id FROM pl_paper2author WHERE paper_id = %d ORDER BY rowid ASC",
-            paperId);
-
-    query.exec(qBuf);
+    query.prepare("SELECT author_id FROM pl_paper2author WHERE paper_id = :paper_id ORDER BY rowid ASC");
+    query.bindValue(":paper_id", paperId);
+    query.exec();
 
     vector<string> authors;
     while (query.next()) {
@@ -90,11 +85,9 @@ Paper DatabaseHelper::getPaper(int paperId)
         authors.push_back(getAuthor(authorId));
     }
 
-    sprintf(qBuf,
-            "SELECT tag_id FROM pl_paper2tag WHERE paper_id = %d",
-            paperId);
-
-    query.exec(qBuf);
+    query.prepare("SELECT tag_id FROM pl_paper2tag WHERE paper_id = :paper_id");
+    query.bindValue(":paper_id", paperId);
+    query.exec();
 
     vector<string> tags;
     while (query.next()) {
@@ -110,13 +103,10 @@ Paper DatabaseHelper::getPaper(int paperId)
 
 string DatabaseHelper::getBookTitle(int bookTitleId)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "SELECT book_title_name FROM pl_book_title WHERE book_title_id = %d",
-            bookTitleId);
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("SELECT book_title_name FROM pl_book_title WHERE book_title_id = :book_title_id");
+    query.bindValue(":book_title_id", bookTitleId);
+    query.exec();
 
     if (!query.last()) return string();
     return query.value(0).toString().toStdString();
@@ -124,13 +114,10 @@ string DatabaseHelper::getBookTitle(int bookTitleId)
 
 string DatabaseHelper::getAuthor(int authorId)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "SELECT author_name FROM pl_author WHERE author_id = %d",
-            authorId);
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("SELECT author_name FROM pl_author WHERE author_id = :author_id");
+    query.bindValue(":author_id", authorId);
+    query.exec();
 
     if (!query.last()) return string();
     return query.value(0).toString().toStdString();
@@ -138,13 +125,10 @@ string DatabaseHelper::getAuthor(int authorId)
 
 string DatabaseHelper::getTag(int tagId)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "SELECT tag_name FROM pl_tag WHERE tag_id = %d",
-            tagId);
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("SELECT tag_name FROM pl_tag WHERE tag_id = :tag_id");
+    query.bindValue(":tag_id", tagId);
+    query.exec();
 
     if (!query.last()) return string();
     return query.value(0).toString().toStdString();
@@ -163,12 +147,9 @@ vector<CategoryStats> DatabaseHelper::getYearStats(SortOrder sortOrder)
 
     vector<CategoryStats> stats(years.size());
     for (vector<CategoryStats>::size_type i = 0; i < stats.size(); ++i) {
-        char qBuf[BUFSIZE];
-        sprintf(qBuf,
-                "SELECT COUNT(*) FROM pl_paper WHERE year = %d",
-                years[i]);
-
-        query.exec(qBuf);
+        query.prepare("SELECT COUNT(*) FROM pl_paper WHERE year = :year");
+        query.bindValue(":year", years[i]);
+        query.exec();
         query.last();
 
         stats[i].setName(to_string(static_cast<long long>(years[i])));
@@ -196,12 +177,9 @@ vector<CategoryStats> DatabaseHelper::getBookTitleStats(SortOrder sortOrder)
 
     vector<CategoryStats> stats(bookTitlesId.size());
     for (vector<CategoryStats>::size_type i = 0; i < stats.size(); ++i) {
-        char qBuf[BUFSIZE];
-        sprintf(qBuf,
-                "SELECT COUNT(*) FROM pl_paper WHERE book_title_id = %d",
-                bookTitlesId[i]);
-
-        query.exec(qBuf);
+        query.prepare("SELECT COUNT(*) FROM pl_paper WHERE book_title_id = :book_title_id");
+        query.bindValue(":book_title_id", bookTitlesId[i]);
+        query.exec();
         query.last();
 
         stats[i].setName(bookTitlesName[i]);
@@ -229,12 +207,9 @@ vector<CategoryStats> DatabaseHelper::getAuthorStats(SortOrder sortOrder)
 
     vector<CategoryStats> stats(authorsId.size());
     for (vector<CategoryStats>::size_type i = 0; i < stats.size(); ++i) {
-        char qBuf[BUFSIZE];
-        sprintf(qBuf,
-                "SELECT COUNT(*) FROM pl_paper2author WHERE author_id = %d",
-                authorsId[i]);
-
-        query.exec(qBuf);
+        query.prepare("SELECT COUNT(*) FROM pl_paper2author WHERE author_id = :author_id");
+        query.bindValue(":author_id", authorsId[i]);
+        query.exec();
         query.last();
 
         stats[i].setName(authorsName[i]);
@@ -262,12 +237,9 @@ vector<CategoryStats> DatabaseHelper::getTagStats(SortOrder sortOrder)
 
     vector<CategoryStats> stats(tagsId.size());
     for (vector<CategoryStats>::size_type i = 0; i < stats.size(); ++i) {
-        char qBuf[BUFSIZE];
-        sprintf(qBuf,
-                "SELECT COUNT(*) FROM pl_paper2tag WHERE tag_id = %d",
-                tagsId[i]);
-
-        query.exec(qBuf);
+        query.prepare("SELECT COUNT(*) FROM pl_paper2tag WHERE tag_id = :tag_id");
+        query.bindValue(":tag_id", tagsId[i]);
+        query.exec();
         query.last();
 
         stats[i].setName(tagsName[i]);
@@ -306,89 +278,85 @@ int DatabaseHelper::addPaper(const Paper& paper)
         tagsId[i] = tagId;
     }
 
-    char qBuf[BUFSIZE];
-    if (paper.getId() <= 0) {
-        sprintf(qBuf,
-                "INSERT INTO pl_paper(year, book_title_id, title, path, comment) "
-                "VALUES(%d, %d, \"%s\", \"%s\", \"%s\")",
-                paper.getYear(), bookTitleId,
-                paper.getTitle().c_str(),
-                paper.getPath().c_str(),
-                paper.getComment().c_str());
-    } else {
-        sprintf(qBuf,
-                "INSERT INTO pl_paper(paper_id, year, book_title_id, title, path, comment) "
-                "VALUES(%d, %d, %d, \"%s\", \"%s\", \"%s\")",
-                paper.getId(), paper.getYear(), bookTitleId,
-                paper.getTitle().c_str(),
-                paper.getPath().c_str(),
-                paper.getComment().c_str());
-    }
-
     QSqlQuery query;
-    query.exec(qBuf);
+    if (paper.getId() <= 0) {
+        query.prepare("INSERT INTO pl_paper(year, book_title_id, title, path, comment) "
+                      "VALUES(:year, :book_title_id, :title, :path, :comment)");
+        query.bindValue(":year", paper.getYear());
+        query.bindValue(":book_title_id", bookTitleId);
+        query.bindValue(":title", paper.getTitle().c_str());
+        query.bindValue(":path", paper.getPath().c_str());
+        query.bindValue(":comment", paper.getComment().c_str());
+    } else {
+        query.prepare("INSERT INTO pl_paper(paper_id, year, book_title_id, title, path, comment) "
+                      "VALUES(:paper_id, :year, :book_title_id, :title, :path, :comment)");
+        query.bindValue(":paper_id", paper.getId());
+        query.bindValue(":year", paper.getYear());
+        query.bindValue(":book_title_id", bookTitleId);
+        query.bindValue(":title", paper.getTitle().c_str());
+        query.bindValue(":path", paper.getPath().c_str());
+        query.bindValue(":comment", paper.getComment().c_str());
+    }
+    query.exec();
 
     int paperId = query.lastInsertId().toInt();
-
+    QVariantList paperIdList, authorIdList;
     for (int i = 0; i < static_cast<int>(authorsId.size()); ++i) {
-        sprintf(qBuf,
-                "INSERT INTO pl_paper2author(paper_id, author_id) "
-                "VALUES(%d, %d)",
-                paperId, authorsId[i]);
-
-        query.exec(qBuf);
+        paperIdList.append(paperId);
+        authorIdList.append(authorsId[i]);
     }
 
+    query.prepare("INSERT INTO pl_paper2author(paper_id, author_id) "
+                  "VALUES(:paper_id, :author_id)");
+    query.bindValue(":paper_id", paperIdList);
+    query.bindValue(":author_id", authorIdList);
+    query.execBatch();
+
+    paperIdList.clear();
+    QVariantList tagIdList;
     for (int i = 0; i < static_cast<int>(tagsId.size()); ++i) {
-        sprintf(qBuf,
-                "INSERT INTO pl_paper2tag(paper_id, tag_id) "
-                "VALUES(%d, %d)",
-                paperId, tagsId[i]);
-
-        query.exec(qBuf);
+        paperIdList.append(paperId);
+        tagIdList.append(tagsId[i]);
     }
+
+    query.prepare("INSERT INTO pl_paper2tag(paper_id, tag_id) "
+                  "VALUES(:paper_id, :tag_id)");
+    query.bindValue(":paper_id", paperIdList);
+    query.bindValue(":tag_id", tagIdList);
+    query.execBatch();
 
     return paperId;
 }
 
 int DatabaseHelper::addBookTitle(const string& bookTitle)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "INSERT INTO pl_book_title(book_title_name) "
-            "VALUES(\"%s\")",
-            bookTitle.c_str());
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("INSERT INTO pl_book_title(book_title_name) "
+                  "VALUES(:book_title_name)");
+    query.bindValue(":book_title_name", bookTitle.c_str());
+    query.exec();
 
     return query.lastInsertId().toInt();
 }
 
 int DatabaseHelper::addAuthor(const string& author)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "INSERT INTO pl_author(author_name) "
-            "VALUES(\"%s\")",
-            author.c_str());
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("INSERT INTO pl_author(author_name) "
+                  "VALUES(:author_name)");
+    query.bindValue(":author_name", author.c_str());
+    query.exec();
 
     return query.lastInsertId().toInt();
 }
 
 int DatabaseHelper::addTag(const string& tag)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "INSERT INTO pl_tag(tag_name) "
-            "VALUES(\"%s\")",
-            tag.c_str());
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("INSERT INTO pl_tag(tag_name) "
+                  "VALUES(:tag_name)");
+    query.bindValue(":tag_name", tag.c_str());
+    query.exec();
 
     return query.lastInsertId().toInt();
 }
@@ -407,13 +375,10 @@ void DatabaseHelper::removePaper(const Paper& paper)
 void DatabaseHelper::removePaper(int paperId)
 {
     // Remove the paper from database
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "DELETE FROM pl_paper WHERE paper_id = %d",
-            paperId);
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("DELETE FROM pl_paper WHERE paper_id = :paper_id");
+    query.bindValue(":paper_id", paperId);
+    query.exec();
 
     // Remove empty book titles
     query.exec("SELECT book_title_id FROM pl_book_title WHERE book_title_id NOT IN "
@@ -445,19 +410,14 @@ void DatabaseHelper::removePaper(int paperId)
 
 void DatabaseHelper::removeBookTitle(int bookTitleId)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "DELETE FROM pl_book_title WHERE book_title_id = %d",
-            bookTitleId);
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("DELETE FROM pl_book_title WHERE book_title_id = :book_title_id");
+    query.bindValue(":book_title_id", bookTitleId);
+    query.exec();
 
-    sprintf(qBuf,
-            "SELECT paper_id FROM pl_paper WHERE book_title_id = %d",
-            bookTitleId);
-
-    query.exec(qBuf);
+    query.prepare("SELECT paper_id FROM pl_paper WHERE book_title_id = :book_title_id");
+    query.bindValue(":book_title_id", bookTitleId);
+    query.exec();
     while (query.next()) {
         int paperId = query.value(0).toInt();
         removePaper(paperId);
@@ -466,24 +426,18 @@ void DatabaseHelper::removeBookTitle(int bookTitleId)
 
 void DatabaseHelper::removeAuthor(int authorId)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "DELETE FROM pl_author WHERE author_id = %d",
-            authorId);
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("DELETE FROM pl_author WHERE author_id = :author_id");
+    query.bindValue(":author_id", authorId);
+    query.exec();
 }
 
 void DatabaseHelper::removeTag(int tagId)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "DELETE FROM pl_tag WHERE tag_id = %d",
-            tagId);
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("DELETE FROM pl_tag WHERE tag_id = :tag_id");
+    query.bindValue(":tag_id", tagId);
+    query.exec();
 }
 
 void DatabaseHelper::createTables()
@@ -527,13 +481,10 @@ void DatabaseHelper::createTables()
 
 int DatabaseHelper::getBookTitleId(const string& bookTitle)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "SELECT book_title_id FROM pl_book_title WHERE book_title_name = \"%s\"",
-            bookTitle.c_str());
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("SELECT book_title_id FROM pl_book_title WHERE book_title_name = :book_title_name");
+    query.bindValue(":book_title_name", bookTitle.c_str());
+    query.exec();
 
     if (!query.last()) return -1;
     return query.value(0).toInt();
@@ -541,13 +492,10 @@ int DatabaseHelper::getBookTitleId(const string& bookTitle)
 
 int DatabaseHelper::getAuthorId(const string& author)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "SELECT author_id FROM pl_author WHERE author_name = \"%s\"",
-            author.c_str());
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("SELECT author_id FROM pl_author WHERE author_name = :author_name");
+    query.bindValue(":author_name", author.c_str());
+    query.exec();
 
     if (!query.last()) return -1;
     return query.value(0).toInt();
@@ -555,13 +503,10 @@ int DatabaseHelper::getAuthorId(const string& author)
 
 int DatabaseHelper::getTagId(const string& tag)
 {
-    char qBuf[BUFSIZE];
-    sprintf(qBuf,
-            "SELECT tag_id FROM pl_tag WHERE tag_name = \"%s\"",
-            tag.c_str());
-
     QSqlQuery query;
-    query.exec(qBuf);
+    query.prepare("SELECT tag_id FROM pl_tag WHERE tag_name = :tag_name");
+    query.bindValue(":tag_name", tag.c_str());
+    query.exec();
 
     if (!query.last()) return -1;
     return query.value(0).toInt(0);
